@@ -50,6 +50,9 @@
     "elapsed": "écoulé",
     "duration": "Durée"
   },
+  "common": {
+    "minutes": "minutes"
+  },
   "numbers": {
     "score": "Score",
     "points": "Points",
@@ -91,6 +94,62 @@
     "too_long": "La saisie est trop longue",
     "invalid_email": "Adresse e-mail invalide",
     "invalid_number": "Nombre invalide"
+  },
+  "welcome": {
+    "title": "Système de Test QI Adaptatif",
+    "description": "Passez une évaluation complète de l'intelligence avec difficulté adaptative et analyses en temps réel. Obtenez des résultats de niveau professionnel en seulement 30 minutes.",
+    "features": {
+      "adaptive": {
+        "title": "Difficulté Adaptative",
+        "description": "Les questions s'ajustent à votre niveau de compétence en temps réel grâce à des algorithmes avancés"
+      },
+      "timed": {
+        "title": "Évaluation Chronométrée",
+        "description": "Test complet de 30 minutes avec limites de temps par question"
+      },
+      "categories": {
+        "title": "Catégories Multiples",
+        "description": "Reconnaissance de motifs, raisonnement spatial, logique, mémoire et énigmes mathématiques"
+      },
+      "scoring": {
+        "title": "Notation en Temps Réel",
+        "description": "Notation avancée basée sur IRT avec classements percentiles"
+      },
+      "standardized": {
+        "title": "Résultats Standardisés",
+        "description": "Résultats comparables aux évaluations QI professionnelles"
+      },
+      "analytics": {
+        "title": "Analyses Instantanées",
+        "description": "Analyse détaillée des performances et insights d'amélioration"
+      }
+    },
+    "testInfo": {
+      "title": "Informations du Test",
+      "duration": "Durée",
+      "questions": "Questions",
+      "difficulty": "Difficulté",
+      "adaptive": "adaptatif",
+      "difficultyScale": "échelle 1-10"
+    },
+    "instructions": {
+      "title": "Instructions",
+      "item1": "Répondez à chaque question au mieux de vos capacités",
+      "item2": "Les questions s'adapteront à votre niveau de performance",
+      "item3": "Vous ne pouvez pas revenir aux questions précédentes",
+      "item4": "Prenez votre temps mais attention au chronomètre",
+      "item5": "Assurez-vous d'avoir une connexion internet stable",
+      "item6": "Trouvez un environnement calme sans distractions"
+    },
+    "button": {
+      "start": "Commencer le Test QI",
+      "preparing": "Préparation du test..."
+    },
+    "disclaimer": "Ce test est à des fins éducatives et de divertissement. Les résultats ne doivent pas être utilisés pour une évaluation clinique ou professionnelle.",
+    "credits": {
+      "text": "Fait avec ❤️ par",
+      "author": "Abdelkarim Ait Bourich"
+    }
   },
   "footer": {
     "copyright": "© {{year}} Système de Test QI Adaptatif",

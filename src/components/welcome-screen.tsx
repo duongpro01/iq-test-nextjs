@@ -7,10 +7,12 @@ import { Button } from '@/components/ui/button';
 import { Brain, Clock, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
 import { LanguageSelector } from '@/components/language-selector';
+import { useTranslation } from 'react-i18next';
 
 export function WelcomeScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { startTest, config } = useTestStore();
+  const { t } = useTranslation('common');
 
   const handleStartTest = async () => {
     setIsLoading(true);
@@ -25,33 +27,33 @@ export function WelcomeScreen() {
   const features = [
     {
       icon: Brain,
-      title: "Adaptive Difficulty",
-      description: "Questions adjust to your skill level in real-time using advanced algorithms"
+      title: t('welcome.features.adaptive.title'),
+      description: t('welcome.features.adaptive.description')
     },
     {
       icon: Clock,
-      title: "Timed Assessment",
-      description: "30-minute comprehensive test with per-question time limits"
+      title: t('welcome.features.timed.title'),
+      description: t('welcome.features.timed.description')
     },
     {
       icon: Target,
-      title: "Multiple Categories",
-      description: "Pattern recognition, spatial reasoning, logic, memory, and math puzzles"
+      title: t('welcome.features.categories.title'),
+      description: t('welcome.features.categories.description')
     },
     {
       icon: TrendingUp,
-      title: "Real-time Scoring",
-      description: "Advanced IRT-based scoring with percentile rankings"
+      title: t('welcome.features.scoring.title'),
+      description: t('welcome.features.scoring.description')
     },
     {
       icon: Users,
-      title: "Standardized Results",
-      description: "Results comparable to professional IQ assessments"
+      title: t('welcome.features.standardized.title'),
+      description: t('welcome.features.standardized.description')
     },
     {
       icon: Zap,
-      title: "Instant Analytics",
-      description: "Detailed performance breakdown and improvement insights"
+      title: t('welcome.features.analytics.title'),
+      description: t('welcome.features.analytics.description')
     }
   ];
 
@@ -81,11 +83,10 @@ export function WelcomeScreen() {
               <Brain className="w-8 h-8 text-primary-foreground" />
             </motion.div>
             <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Adaptive IQ Test System
+              {t('welcome.title')}
             </CardTitle>
             <CardDescription className="text-lg mt-2 max-w-2xl mx-auto">
-              Take a comprehensive intelligence assessment with adaptive difficulty and real-time analytics. 
-              Get professional-grade results in just 30 minutes.
+              {t('welcome.description')}
             </CardDescription>
           </CardHeader>
 
@@ -118,19 +119,19 @@ export function WelcomeScreen() {
               transition={{ delay: 0.8, duration: 0.5 }}
               className="bg-muted/30 rounded-lg p-6 space-y-4"
             >
-              <h3 className="text-lg font-semibold">Test Information</h3>
+              <h3 className="text-lg font-semibold">{t('welcome.testInfo.title')}</h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                 <div className="flex items-center space-x-2">
                   <Clock className="w-4 h-4 text-primary" />
-                  <span><strong>Duration:</strong> {Math.floor(config.globalTimeLimit / 60)} minutes</span>
+                  <span><strong>{t('welcome.testInfo.duration')}:</strong> {Math.floor(config.globalTimeLimit / 60)} {t('common.minutes')}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Target className="w-4 h-4 text-primary" />
-                  <span><strong>Questions:</strong> {config.totalQuestions} adaptive</span>
+                  <span><strong>{t('welcome.testInfo.questions')}:</strong> {config.totalQuestions} {t('welcome.testInfo.adaptive')}</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <TrendingUp className="w-4 h-4 text-primary" />
-                  <span><strong>Difficulty:</strong> 1-10 scale</span>
+                  <span><strong>{t('welcome.testInfo.difficulty')}:</strong> {t('welcome.testInfo.difficultyScale')}</span>
                 </div>
               </div>
             </motion.div>
@@ -142,14 +143,14 @@ export function WelcomeScreen() {
               transition={{ delay: 1.0, duration: 0.5 }}
               className="space-y-4"
             >
-              <h3 className="text-lg font-semibold">Instructions</h3>
+              <h3 className="text-lg font-semibold">{t('welcome.instructions.title')}</h3>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <p>• Answer each question to the best of your ability</p>
-                <p>• Questions will adapt to your performance level</p>
-                <p>• You cannot go back to previous questions</p>
-                <p>• Take your time but be mindful of the timer</p>
-                <p>• Ensure you have a stable internet connection</p>
-                <p>• Find a quiet environment free from distractions</p>
+                <p>• {t('welcome.instructions.item1')}</p>
+                <p>• {t('welcome.instructions.item2')}</p>
+                <p>• {t('welcome.instructions.item3')}</p>
+                <p>• {t('welcome.instructions.item4')}</p>
+                <p>• {t('welcome.instructions.item5')}</p>
+                <p>• {t('welcome.instructions.item6')}</p>
               </div>
             </motion.div>
 
@@ -169,12 +170,12 @@ export function WelcomeScreen() {
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
                     <div className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
-                    <span>Preparing Test...</span>
+                    <span>{t('welcome.button.preparing')}</span>
                   </div>
                 ) : (
                   <div className="flex items-center space-x-2">
                     <Brain className="w-5 h-5" />
-                    <span>Start IQ Test</span>
+                    <span>{t('welcome.button.start')}</span>
                   </div>
                 )}
               </Button>
@@ -188,18 +189,17 @@ export function WelcomeScreen() {
               className="text-xs text-muted-foreground text-center pt-4 border-t space-y-2"
             >
               <p>
-                This test is for educational and entertainment purposes. 
-                Results should not be used for clinical or professional assessment.
+                {t('welcome.disclaimer')}
               </p>
               <p>
-                Made with ❤️ by{' '}
+                {t('welcome.credits.text')}{' '}
                 <a 
                   href="https://github.com/VeinDevTtv" 
                   target="_blank" 
                   rel="noopener noreferrer"
                   className="text-primary hover:text-primary/80 transition-colors font-medium"
                 >
-                  Abdelkarim Ait Bourich
+                  {t('welcome.credits.author')}
                 </a>
               </p>
             </motion.div>

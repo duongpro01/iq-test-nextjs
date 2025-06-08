@@ -50,6 +50,9 @@
     "elapsed": "elapsed",
     "duration": "Duration"
   },
+  "common": {
+    "minutes": "minutes"
+  },
   "numbers": {
     "score": "Score",
     "points": "Points",
@@ -92,6 +95,62 @@
     "invalid_email": "Invalid email address",
     "invalid_number": "Invalid number"
   },
+  "welcome": {
+    "title": "Adaptive IQ Test System",
+    "description": "Take a comprehensive intelligence assessment with adaptive difficulty and real-time analytics. Get professional-grade results in just 30 minutes.",
+    "features": {
+      "adaptive": {
+        "title": "Adaptive Difficulty",
+        "description": "Questions adjust to your skill level in real-time using advanced algorithms"
+      },
+      "timed": {
+        "title": "Timed Assessment",
+        "description": "30-minute comprehensive test with per-question time limits"
+      },
+      "categories": {
+        "title": "Multiple Categories",
+        "description": "Pattern recognition, spatial reasoning, logic, memory, and math puzzles"
+      },
+      "scoring": {
+        "title": "Real-time Scoring",
+        "description": "Advanced IRT-based scoring with percentile rankings"
+      },
+      "standardized": {
+        "title": "Standardized Results",
+        "description": "Results comparable to professional IQ assessments"
+      },
+      "analytics": {
+        "title": "Instant Analytics",
+        "description": "Detailed performance breakdown and improvement insights"
+      }
+    },
+    "testInfo": {
+      "title": "Test Information",
+      "duration": "Duration",
+      "questions": "Questions",
+      "difficulty": "Difficulty",
+      "adaptive": "adaptive",
+      "difficultyScale": "1-10 scale"
+    },
+    "instructions": {
+      "title": "Instructions",
+      "item1": "Answer each question to the best of your ability",
+      "item2": "Questions will adapt to your performance level",
+      "item3": "You cannot go back to previous questions",
+      "item4": "Take your time but be mindful of the timer",
+      "item5": "Ensure you have a stable internet connection",
+      "item6": "Find a quiet environment free from distractions"
+    },
+    "button": {
+      "start": "Start IQ Test",
+      "preparing": "Preparing Test..."
+    },
+    "disclaimer": "This test is for educational and entertainment purposes. Results should not be used for clinical or professional assessment.",
+    "credits": {
+      "text": "Made with ❤️ by",
+      "author": "Abdelkarim Ait Bourich"
+    }
+  },
   "footer": {
     "copyright": "© {{year}} Adaptive IQ Test System",
     "made_by": "Made with ❤️ by",
@@ -99,5 +158,64 @@
     "privacy": "Privacy Policy",
     "terms": "Terms of Service",
     "contact": "Contact Us"
+  },
+  "welcome": {
+    "title": "Adaptive IQ Test System",
+    "description": "Take a comprehensive intelligence assessment with adaptive difficulty and real-time analytics. Get professional-grade results in just 30 minutes.",
+    "features": {
+      "adaptive": {
+        "title": "Adaptive Difficulty",
+        "description": "Questions adjust to your skill level in real-time using advanced algorithms"
+      },
+      "timed": {
+        "title": "Timed Assessment",
+        "description": "30-minute comprehensive test with per-question time limits"
+      },
+      "categories": {
+        "title": "Multiple Categories",
+        "description": "Pattern recognition, spatial reasoning, logic, memory, and math puzzles"
+      },
+      "scoring": {
+        "title": "Real-time Scoring",
+        "description": "Advanced IRT-based scoring with percentile rankings"
+      },
+      "standardized": {
+        "title": "Standardized Results",
+        "description": "Results comparable to professional IQ assessments"
+      },
+      "analytics": {
+        "title": "Instant Analytics",
+        "description": "Detailed performance breakdown and improvement insights"
+      }
+    },
+    "testInfo": {
+      "title": "Test Information",
+      "duration": "Duration",
+      "questions": "Questions",
+      "difficulty": "Difficulty",
+      "adaptive": "adaptive",
+      "difficultyScale": "1-10 scale"
+    },
+    "instructions": {
+      "title": "Instructions",
+      "item1": "Answer each question to the best of your ability",
+      "item2": "Questions will adapt to your performance level",
+      "item3": "You cannot go back to previous questions",
+      "item4": "Take your time but be mindful of the timer",
+      "item5": "Ensure you have a stable internet connection",
+      "item6": "Find a quiet environment free from distractions"
+    },
+    "button": {
+      "start": "Start IQ Test",
+      "preparing": "Preparing Test..."
+    },
+    "disclaimer": "This test is for educational and entertainment purposes. Results should not be used for clinical or professional assessment.",
+    "credits": {
+      "text": "Made with ❤️ by",
+      "author": "Abdelkarim Ait Bourich"
+    }
+  },
+  "common": {
+    "minutes": "minutes"
   }
 } 
