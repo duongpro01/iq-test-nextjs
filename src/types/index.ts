@@ -232,4 +232,148 @@ export interface CalibrationData {
     pValue: number;
     rmse: number;
   };
+}
+
+// Gamification interfaces
+export interface IQChallenge {
+  id: string;
+  type: 'daily' | 'weekly' | 'special';
+  title: string;
+  description: string;
+  difficulty: number;
+  timeLimit: number;
+  questions: Question[];
+  rewards: ChallengeReward[];
+  startDate: Date;
+  endDate: Date;
+  isActive: boolean;
+  participants: number;
+}
+
+export interface ChallengeReward {
+  type: 'badge' | 'points' | 'streak' | 'title';
+  value: string | number;
+  description: string;
+  icon?: string;
+}
+
+export interface UserProfile {
+  id: string;
+  username?: string;
+  level: number;
+  totalPoints: number;
+  streakDays: number;
+  maxStreak: number;
+  badges: Badge[];
+  achievements: Achievement[];
+  domainLevels: Record<QuestionCategory, number>;
+  createdAt: Date;
+  lastActive: Date;
+  preferences: UserPreferences;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  rarity: 'common' | 'rare' | 'epic' | 'legendary';
+  unlockedAt: Date;
+  category: QuestionCategory | 'general';
+}
+
+export interface Achievement {
+  id: string;
+  name: string;
+  description: string;
+  progress: number;
+  target: number;
+  isCompleted: boolean;
+  completedAt?: Date;
+  type: 'accuracy' | 'speed' | 'streak' | 'domain' | 'challenge';
+}
+
+export interface LeaderboardEntry {
+  rank: number;
+  username: string;
+  score: number;
+  timeCompleted: number;
+  country?: string;
+  isCurrentUser?: boolean;
+}
+
+export interface Leaderboard {
+  type: 'daily' | 'weekly' | 'monthly' | 'allTime';
+  entries: LeaderboardEntry[];
+  lastUpdated: Date;
+  totalParticipants: number;
+}
+
+export interface UserPreferences {
+  animations: boolean;
+  soundEffects: boolean;
+  hapticFeedback: boolean;
+  showHints: boolean;
+  difficultyPreference: 'adaptive' | 'fixed';
+  accessibilityMode: AccessibilityMode;
+  language: string;
+  timezone: string;
+}
+
+export interface AccessibilityMode {
+  dyslexiaFriendly: boolean;
+  highContrast: boolean;
+  reducedMotion: boolean;
+  screenReaderOptimized: boolean;
+  colorBlindSupport: boolean;
+  fontSize: 'small' | 'medium' | 'large' | 'xlarge';
+}
+
+// Animation and transition types
+export interface QuestionTransition {
+  type: 'slide' | 'fade' | 'puzzle' | 'matrix' | 'flip';
+  duration: number;
+  easing: string;
+  direction?: 'left' | 'right' | 'up' | 'down';
+}
+
+export interface ProgressionSystem {
+  currentLevel: number;
+  currentXP: number;
+  xpToNextLevel: number;
+  totalXP: number;
+  levelBenefits: LevelBenefit[];
+}
+
+export interface LevelBenefit {
+  level: number;
+  benefit: string;
+  unlocked: boolean;
+}
+
+// Smart hints and AI assistance
+export interface SmartHint {
+  id: string;
+  questionId: string;
+  hintText: string;
+  hintType: 'socratic' | 'conceptual' | 'strategic' | 'elimination';
+  difficulty: number;
+  usageCount: number;
+  effectiveness: number;
+}
+
+export interface CognitiveWeakness {
+  domain: QuestionCategory;
+  severity: 'mild' | 'moderate' | 'significant';
+  patterns: string[];
+  recommendations: TrainingRecommendation[];
+}
+
+export interface TrainingRecommendation {
+  type: 'mini-game' | 'practice' | 'tutorial' | 'exercise';
+  title: string;
+  description: string;
+  estimatedTime: number;
+  difficulty: number;
+  targetSkills: string[];
 } 
