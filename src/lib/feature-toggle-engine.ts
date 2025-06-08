@@ -26,7 +26,7 @@ export interface FeatureVariant {
   id: string;
   name: string;
   weight: number; // percentage allocation
-  config: Record<string, any>;
+  config: Record<string, unknown>;
 }
 
 export interface FeatureMetadata {
@@ -93,7 +93,7 @@ class FeatureToggleEngine {
   /**
    * Get feature configuration with variant-specific settings
    */
-  getFeatureConfig(featureId: string): Record<string, any> {
+  getFeatureConfig(featureId: string): Record<string, unknown> {
     const feature = this.config.features[featureId];
     if (!feature || !this.isFeatureEnabled(featureId)) {
       return {};
@@ -576,7 +576,7 @@ export const featureToggleEngine = new FeatureToggleEngine();
 export const useFeatureFlag = (featureId: string) => {
   const [isEnabled, setIsEnabled] = React.useState(false);
   const [variant, setVariant] = React.useState<string | null>(null);
-  const [config, setConfig] = React.useState<Record<string, any>>({});
+  const [config, setConfig] = React.useState<Record<string, unknown>>({});
 
   React.useEffect(() => {
     const enabled = featureToggleEngine.isFeatureEnabled(featureId);

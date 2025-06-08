@@ -379,10 +379,10 @@ export const useCheatDetection = (isActive: boolean = true) => {
         confidenceScore: metrics.confidenceScore,
         focusEvents: metrics.focusEvents.length,
         tabSwitches: metrics.tabSwitches,
-        suspiciousMouseEvents: metrics.suspiciousMouseMovements,
-        devToolsDetections: metrics.devToolsDetections,
-        totalEvents: metrics.totalSuspiciousEvents,
-        sessionDuration: metrics.sessionDuration
+        suspiciousMouseEvents: metrics.mouseMovements?.length || 0,
+        devToolsDetections: metrics.suspiciousPatterns?.filter(p => p.type === 'keyboard_anomaly').length || 0,
+        totalEvents: metrics.suspiciousPatterns?.length || 0,
+        sessionDuration: Date.now() - (metrics.focusEvents[0]?.timestamp || Date.now())
       });
     };
 

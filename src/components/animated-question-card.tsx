@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -341,9 +342,11 @@ export function AnimatedQuestionCard({
                 className="flex justify-center mb-6"
               >
                 <div className="max-w-md">
-                  <img 
+                  <Image 
                     src={question.image} 
                     alt="Question diagram" 
+                    width={400}
+                    height={300}
                     className="w-full h-auto rounded-lg border"
                   />
                 </div>
@@ -449,9 +452,9 @@ export function AnimatedQuestionCard({
               className="text-center text-xs text-muted-foreground pt-4"
             >
               {selectedAnswer === null ? (
-                <p>Select an answer or click "Skip Question" to continue</p>
+                <p>Select an answer or click &quot;Skip Question&quot; to continue</p>
               ) : (
-                <p>Click "Submit Answer" to proceed to the next question</p>
+                <p>Click &quot;Submit Answer&quot; to proceed to the next question</p>
               )}
             </motion.div>
           </CardContent>

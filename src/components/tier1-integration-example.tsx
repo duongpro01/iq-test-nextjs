@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Trophy, Settings, Shield, Download } from 'lucide-react';
+import { Trophy, Settings, Shield } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -14,7 +14,7 @@ import { EnhancedResultsExport } from './enhanced-results-export';
 import { leaderboardEngine } from '@/lib/leaderboard-engine';
 import { gamificationEngine } from '@/lib/gamification-engine';
 import { featureToggleEngine } from '@/lib/feature-toggle-engine';
-import { TestResult, QuestionCategory } from '@/types';
+import { TestResult, QuestionCategory, IQClassification } from '@/types';
 
 interface Tier1IntegrationProps {
   testResult?: TestResult;
@@ -133,7 +133,7 @@ export function Tier1IntegrationExample({ testResult, userId, sessionId }: Tier1
     standardError: 0.3,
     confidenceInterval: [118, 132],
     percentileRank: 85,
-    classification: 'Superior (120-129)' as any,
+    classification: 'Superior (120-129)' as const,
     difficultyProgression: [0.2, 0.4, 0.6, 0.8, 1.0, 1.2, 1.1, 0.9, 1.3, 1.5],
     abilityProgression: [0.0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.1, 1.0, 1.2, 1.1],
     responseTimeProgression: [20000, 18000, 15000, 12000, 14000, 16000, 13000, 11000, 17000, 15000],

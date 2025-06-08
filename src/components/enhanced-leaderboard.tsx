@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Trophy, Medal, Award, Globe, Clock, TrendingUp, Users, Flag } from 'lucide-react';
+import { Trophy, Medal, Award, Globe, Clock, TrendingUp, Users } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { leaderboardEngine, LeaderboardEntry, LeaderboardStats } from '@/lib/leaderboard-engine';
 
 interface EnhancedLeaderboardProps {
@@ -134,21 +133,17 @@ export function EnhancedLeaderboard({
         
         <div className="flex flex-col sm:flex-row gap-3">
           {showCountryFilter && (
-            <Select value={selectedCountry} onValueChange={setSelectedCountry}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {COUNTRIES.map(country => (
-                  <SelectItem key={country.code} value={country.code}>
-                    <div className="flex items-center gap-2">
-                      <span>{country.flag}</span>
-                      <span>{country.name}</span>
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+            <select 
+              value={selectedCountry} 
+              onChange={(e) => setSelectedCountry(e.target.value)}
+              className="w-[180px] px-3 py-2 border rounded-md"
+            >
+              {COUNTRIES.map(country => (
+                <option key={country.code} value={country.code}>
+                  {country.flag} {country.name}
+                </option>
+              ))}
+            </select>
           )}
           
           <Button
@@ -241,7 +236,7 @@ export function EnhancedLeaderboard({
                         </div>
                         <Badge variant="secondary">#{leaderboardData.userRank}</Badge>
                       </div>
-                      <Button variant="outline" size="sm" onClick={() => setCurrentPage(Math.ceil(leaderboardData.userRank / maxEntries))}>
+                      <Button variant="outline" size="sm" onClick={() => setCurrentPage(Math.ceil((leaderboardData.userRank || 1) / maxEntries))}>
                         View My Position
                       </Button>
                     </div>

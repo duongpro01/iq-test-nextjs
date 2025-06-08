@@ -16,13 +16,7 @@ import {
   Clock, 
   Zap,
   Star,
-  Award,
-  BarChart3,
-  PieChart,
-  LineChart,
   FileText,
-  Link,
-  Mail,
   Twitter,
   Facebook,
   Linkedin,
@@ -38,8 +32,6 @@ import {
   PolarRadiusAxis, 
   Radar, 
   ResponsiveContainer,
-  LineChart as RechartsLineChart,
-  Line,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -103,32 +95,32 @@ export function EnhancedResultsDashboard({
   const cognitiveProfile = [
     {
       domain: 'Pattern Recognition',
-      score: result.domainAnalysis?.['PATTERN_RECOGNITION']?.score || 0,
-      percentile: result.domainAnalysis?.['PATTERN_RECOGNITION']?.percentile || 50,
+      score: result.domainMastery?.['Pattern Recognition']?.abilityEstimate * 20 + 50 || 50,
+      percentile: Math.min(99, Math.max(1, (result.domainMastery?.['Pattern Recognition']?.abilityEstimate || 0) * 15 + 50)),
       fullMark: 100
     },
     {
       domain: 'Spatial Reasoning',
-      score: result.domainAnalysis?.['SPATIAL_REASONING']?.score || 0,
-      percentile: result.domainAnalysis?.['SPATIAL_REASONING']?.percentile || 50,
+      score: result.domainMastery?.['Spatial Reasoning']?.abilityEstimate * 20 + 50 || 50,
+      percentile: Math.min(99, Math.max(1, (result.domainMastery?.['Spatial Reasoning']?.abilityEstimate || 0) * 15 + 50)),
       fullMark: 100
     },
     {
       domain: 'Logical Deduction',
-      score: result.domainAnalysis?.['LOGICAL_DEDUCTION']?.score || 0,
-      percentile: result.domainAnalysis?.['LOGICAL_DEDUCTION']?.percentile || 50,
+      score: result.domainMastery?.['Logical Deduction']?.abilityEstimate * 20 + 50 || 50,
+      percentile: Math.min(99, Math.max(1, (result.domainMastery?.['Logical Deduction']?.abilityEstimate || 0) * 15 + 50)),
       fullMark: 100
     },
     {
       domain: 'Memory',
-      score: result.domainAnalysis?.['SHORT_TERM_MEMORY']?.score || 0,
-      percentile: result.domainAnalysis?.['SHORT_TERM_MEMORY']?.percentile || 50,
+      score: result.domainMastery?.['Short-Term Memory']?.abilityEstimate * 20 + 50 || 50,
+      percentile: Math.min(99, Math.max(1, (result.domainMastery?.['Short-Term Memory']?.abilityEstimate || 0) * 15 + 50)),
       fullMark: 100
     },
     {
       domain: 'Numerical',
-      score: result.domainAnalysis?.['NUMERICAL_REASONING']?.score || 0,
-      percentile: result.domainAnalysis?.['NUMERICAL_REASONING']?.percentile || 50,
+      score: result.domainMastery?.['Numerical Reasoning']?.abilityEstimate * 20 + 50 || 50,
+      percentile: Math.min(99, Math.max(1, (result.domainMastery?.['Numerical Reasoning']?.abilityEstimate || 0) * 15 + 50)),
       fullMark: 100
     }
   ];
@@ -141,7 +133,7 @@ export function EnhancedResultsDashboard({
   })) || [];
 
   // Generate response time analysis
-  const responseTimeData = result.responseTimeAnalysis || [];
+  const responseTimeData = result.responseTimeProgression || [];
 
   // Security analysis
   const securityMetrics = securityEngine.getCurrentMetrics();
@@ -218,7 +210,7 @@ export function EnhancedResultsDashboard({
     }
   };
 
-  const generateHTMLReport = (data: any): string => {
+  const generateHTMLReport = (data: { result: TestResult; cognitiveProfile: any; securityReport: any }): string => {
     return `
       <!DOCTYPE html>
       <html>
@@ -245,7 +237,7 @@ export function EnhancedResultsDashboard({
           <h2>Overall Performance</h2>
           <p>Accuracy: ${data.result.accuracy.toFixed(1)}%</p>
           <p>Questions Answered: ${data.result.totalQuestions}</p>
-          <p>Test Duration: ${Math.round(data.result.totalTime / 60)} minutes</p>
+          <p>Test Duration: ${Math.round(data.result.completionTime / 60)} minutes</p>
         </div>
         
         <div class="section">
@@ -361,7 +353,7 @@ export function EnhancedResultsDashboard({
                   </div>
                   <div className="text-center">
                     <div className="text-2xl font-bold text-purple-600">
-                      {Math.round(result.totalTime / 60)}m
+                      {Math.round(result.completionTime / 60)}m
                     </div>
                     <div className="text-sm text-muted-foreground">Duration</div>
                   </div>

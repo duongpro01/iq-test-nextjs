@@ -448,7 +448,7 @@ export const useGamificationStore = create<GamificationStore>()(
         console.log('Engagement tracked:', event);
       },
 
-      analyzeCognitiveWeaknesses: (_testResults) => {
+      analyzeCognitiveWeaknesses: (_testResults: UserAnswer[]) => {
         // AI-powered analysis of cognitive weaknesses
         // This would integrate with your IRT engine
         const weaknesses: CognitiveWeakness[] = [];

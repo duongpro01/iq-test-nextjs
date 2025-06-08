@@ -1,4 +1,4 @@
-import { Question, UserAnswer, TestResult, QuestionCategory } from '@/types';
+import { UserAnswer, TestResult, QuestionCategory } from '@/types';
 
 // Calibration data interfaces
 export interface CalibrationData {
@@ -69,13 +69,13 @@ class CalibrationEngine {
   /**
    * Anonymize user data for calibration
    */
-  private anonymizeUser(userId: string, additionalData?: any): string {
+  private anonymizeUser(userId: string, additionalData?: Record<string, unknown>): string {
     // Create anonymous hash that can't be traced back
     const hash = this.createAnonymousHash(userId, additionalData);
     return hash;
   }
 
-  private createAnonymousHash(userId: string, additionalData?: any): string {
+  private createAnonymousHash(userId: string, additionalData?: Record<string, unknown>): string {
     // Use a one-way hash with salt for anonymization
     const data = JSON.stringify({ userId, additionalData, salt: 'iq_test_calibration_2024' });
     return btoa(data).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);

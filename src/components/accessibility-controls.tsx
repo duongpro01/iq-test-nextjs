@@ -359,7 +359,7 @@ export function AccessibilityControls({ onClose }: AccessibilityControlsProps) {
                             <Button
                               key={size}
                               variant="outline"
-                              size={size.toLowerCase() as any}
+                              size={size.toLowerCase() as "sm" | "default" | "lg"}
                             >
                               {size}
                             </Button>

@@ -40,7 +40,7 @@ export interface SuspiciousPattern {
   type: 'rapid_answers' | 'perfect_accuracy' | 'unusual_timing' | 'focus_loss' | 'mouse_anomaly' | 'keyboard_anomaly';
   severity: 'low' | 'medium' | 'high';
   description: string;
-  evidence: any[];
+  evidence: unknown[];
   timestamp: number;
   questionIds: string[];
 }
@@ -432,7 +432,7 @@ class SecurityEngine {
     if (typeof window === 'undefined') return;
 
     // Method 1: Console detection
-    let devtools = { open: false, orientation: null };
+    const devtools = { open: false, orientation: null };
     const threshold = 160;
 
     setInterval(() => {
@@ -588,8 +588,6 @@ class SecurityEngine {
     details: SecurityMetrics;
   } {
     const patterns = this.metrics.suspiciousPatterns;
-    const highRiskPatterns = patterns.filter(p => p.severity === 'high').length;
-    const mediumRiskPatterns = patterns.filter(p => p.severity === 'medium').length;
     
     let summary = '';
     const recommendations: string[] = [];

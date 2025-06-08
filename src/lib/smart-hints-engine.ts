@@ -218,7 +218,7 @@ class SmartHintsEngine {
    * Generate conceptual understanding hint
    */
   private generateConceptualHint(context: HintContext): SmartHint | null {
-    const { question, wrongAnswers } = context;
+    const { question } = context;
 
     let hintText = '';
     const hintId = `conceptual_${question.id}_${Date.now()}`;
@@ -410,7 +410,7 @@ class SmartHintsEngine {
     return groups;
   }
 
-  private getQuestionCategory(questionId: string): QuestionCategory {
+  private getQuestionCategory(_questionId: string): QuestionCategory {
     // This would look up the actual question category
     // For now, return a default
     return QuestionCategory.PATTERN_RECOGNITION;
@@ -503,7 +503,7 @@ class SmartHintsEngine {
   /**
    * Track hint effectiveness
    */
-  trackHintEffectiveness(hintId: string, wasHelpful: boolean): void {
+  trackHintEffectiveness(_hintId: string, _wasHelpful: boolean): void {
     // This would update the hint's effectiveness rating
     // and improve future hint generation
   }
