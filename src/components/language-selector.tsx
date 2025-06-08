@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
@@ -46,6 +46,7 @@ export function LanguageSelector({
   const [currentLocale, setCurrentLocale] = useState<SupportedLocale>('en');
   const [isChanging, setIsChanging] = useState(false);
   const [detectedLocale, setDetectedLocale] = useState<SupportedLocale | null>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrentLocale(getCurrentLocale());
@@ -58,6 +59,20 @@ export function LanguageSelector({
       }
     }
   }, [autoDetect]);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen]);
 
   const handleLanguageChange = async (locale: SupportedLocale) => {
     if (locale === currentLocale) return;
@@ -94,19 +109,27 @@ export function LanguageSelector({
     isSelected: boolean;
     isDetected?: boolean;
   }) => (
-    <motion.button
+    <motion.div
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
       onClick={() => handleLanguageChange(language.code)}
       className={`
-        w-full flex items-center gap-3 p-3 rounded-lg transition-all
+        w-full flex items-center gap-3 p-3 rounded-lg transition-all cursor-pointer
         ${isSelected 
           ? 'bg-primary text-primary-foreground' 
           : 'hover:bg-muted/50'
         }
         ${isRTL(language.code) ? 'flex-row-reverse text-right' : 'text-left'}
+        ${isChanging ? 'opacity-50 cursor-not-allowed' : ''}
       `}
-      disabled={isChanging}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          handleLanguageChange(language.code);
+        }
+      }}
     >
       {showFlags && (
         <span className="text-xl" role="img" aria-label={language.name}>
@@ -142,31 +165,32 @@ export function LanguageSelector({
           <Check className="w-4 h-4" />
         )}
       </div>
-    </motion.button>
+    </motion.div>
   );
 
   if (variant === 'compact') {
     return (
-      <Button
-        variant="ghost"
-        size="sm"
-        onClick={() => setIsOpen(!isOpen)}
-        className={`relative ${className}`}
-        disabled={isChanging}
-      >
-        {isChanging ? (
-          <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-        ) : (
-          <>
-            {showFlags && (
-              <span className="mr-2">{LANGUAGES[currentLocale].flag}</span>
-            )}
-            <span className="hidden sm:inline">
-              {LANGUAGES[currentLocale].code.toUpperCase()}
-            </span>
-            <ChevronDown className="w-4 h-4 ml-1" />
-          </>
-        )}
+      <div ref={dropdownRef} className={`relative ${className}`}>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setIsOpen(!isOpen)}
+          disabled={isChanging}
+        >
+          {isChanging ? (
+            <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          ) : (
+            <>
+              {showFlags && (
+                <span className="mr-2">{LANGUAGES[currentLocale].flag}</span>
+              )}
+              <span className="hidden sm:inline">
+                {LANGUAGES[currentLocale].code.toUpperCase()}
+              </span>
+              <ChevronDown className="w-4 h-4 ml-1" />
+            </>
+          )}
+        </Button>
         
         <AnimatePresence>
           {isOpen && (
@@ -193,7 +217,7 @@ export function LanguageSelector({
             </motion.div>
           )}
         </AnimatePresence>
-      </Button>
+      </div>
     );
   }
 
