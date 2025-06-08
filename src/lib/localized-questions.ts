@@ -101,6 +101,7 @@ const frenchQuestions: Partial<Record<string, { question: string; options: strin
 
 export function getLocalizedQuestions(locale: string): Question[] {
   const normalizedLocale = locale.split('-')[0]; // Convert en-US to en
+  console.log('getLocalizedQuestions called with locale:', normalizedLocale);
   
   return questions.map(question => {
     let localizedContent;
@@ -117,6 +118,7 @@ export function getLocalizedQuestions(locale: string): Question[] {
     }
     
     if (localizedContent) {
+      console.log(`Found translation for ${question.id} in ${normalizedLocale}:`, localizedContent.question);
       return {
         ...question,
         question: localizedContent.question,
@@ -130,6 +132,12 @@ export function getLocalizedQuestions(locale: string): Question[] {
 }
 
 export function getLocalizedQuestion(questionId: string, locale: string): Question | null {
+  console.log('getLocalizedQuestion called with:', { questionId, locale });
   const localizedQuestions = getLocalizedQuestions(locale);
-  return localizedQuestions.find(q => q.id === questionId) || null;
+  const result = localizedQuestions.find(q => q.id === questionId) || null;
+  console.log('getLocalizedQuestion result:', result ? 'Found translation' : 'No translation found');
+  if (result) {
+    console.log('Translated question text:', result.question);
+  }
+  return result;
 }

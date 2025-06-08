@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,8 @@ import { Clock, Brain, TrendingUp, AlertTriangle } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
 import { formatTime } from '@/lib/utils';
 import { Question } from '@/types';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedQuestion } from '@/lib/localized-questions';
 
 interface QuestionCardProps {
   question: Question;
@@ -21,19 +23,49 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
   const [timeRemaining, setTimeRemaining] = useState(question.timeLimit);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  
+  const { i18n } = useTranslation();
   const { 
     submitAnswer, 
     currentSession, 
     updateTimer
   } = useTestStore();
 
+  // Force re-render when language changes
+  const [, forceUpdate] = useState({});
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      forceUpdate({});
+    };
+    
+    window.addEventListener('languageChanged', handleLanguageChange);
+    i18n.on('languageChanged', handleLanguageChange);
+    
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange);
+      i18n.off('languageChanged', handleLanguageChange);
+    };
+  }, [i18n]);
+
+  // Get localized question based on current language
+  const getLocalizedQuestionForRender = () => {
+    const currentLocale = i18n.language.split('-')[0]; // Convert en-US to en
+    console.log('Current locale:', currentLocale, 'Question ID:', question.id);
+    const localized = getLocalizedQuestion(question.id, currentLocale);
+    console.log('Localized question:', localized ? 'Found' : 'Not found');
+    if (localized) {
+      console.log('Localized question text:', localized.question);
+    }
+    return localized || question; // Fallback to original if no translation
+  };
+  
+  const localizedQuestion = getLocalizedQuestionForRender();
+
   // Reset timer and selected answer when question changes
   useEffect(() => {
-    setTimeRemaining(question.timeLimit);
+    setTimeRemaining(localizedQuestion.timeLimit);
     setSelectedAnswer(null);
     setIsSubmitting(false);
-  }, [question.id, question.timeLimit]);
+  }, [localizedQuestion.id, localizedQuestion.timeLimit]);
 
   const handleSubmit = useCallback(async (answerIndex: number) => {
     if (isSubmitting) return;
@@ -77,7 +109,7 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
   }, [currentSession, updateTimer]);
 
   const progressPercentage = ((questionNumber - 1) / totalQuestions) * 100;
-  const timeProgressPercentage = (timeRemaining / question.timeLimit) * 100;
+  const timeProgressPercentage = (timeRemaining / localizedQuestion.timeLimit) * 100;
   const globalTimeRemaining = currentSession?.globalTimeRemaining || 0;
   
   const isTimeWarning = timeRemaining <= 10;
@@ -100,7 +132,7 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
             <div className="flex justify-between items-center text-sm">
               <span className="font-medium">Question {questionNumber} of {totalQuestions}</span>
               <span className="text-muted-foreground">
-                Ability Level: {currentSession?.abilityEstimate?.toFixed(1) || '0.0'}
+                Ability Level: {currentSession?.abilityEstimate?.toFixed(1) || '0.0'} | Lang: {i18n.language}
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
@@ -142,14 +174,17 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
               <div className="flex-1">
                 <div className="flex items-center space-x-2 mb-2">
                   <span className="px-2 py-1 bg-primary/10 text-primary text-xs font-medium rounded">
-                    {question.category}
+                    {localizedQuestion.category}
                   </span>
                   <span className="px-2 py-1 bg-muted text-muted-foreground text-xs rounded">
-                    Level {question.difficulty}
+                    Level {localizedQuestion.difficulty}
                   </span>
                 </div>
                 <CardTitle className="text-xl leading-relaxed">
-                  {question.question}
+                  <div className="text-xs text-muted-foreground mb-2">
+                    [DEBUG: Lang={i18n.language}, ID={question.id}, Localized={localizedQuestion.question !== question.question ? 'YES' : 'NO'}]
+                  </div>
+                  {localizedQuestion.question}
                 </CardTitle>
               </div>
               {isTimeWarning && (
@@ -166,11 +201,11 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
 
           <CardContent className="space-y-4">
             {/* Question Image (if any) */}
-            {question.image && (
+            {localizedQuestion.image && (
               <div className="flex justify-center mb-6">
                 <div className="max-w-md">
                   <img 
-                    src={question.image} 
+                    src={localizedQuestion.image} 
                     alt="Question diagram" 
                     className="w-full h-auto rounded-lg border"
                   />
@@ -181,7 +216,7 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
             {/* Answer Options */}
             <div className="grid grid-cols-1 gap-3">
               <AnimatePresence>
-                {question.options.map((option, index) => (
+                {localizedQuestion.options.map((option, index) => (
                   <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 10 }}

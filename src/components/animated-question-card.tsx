@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,6 +21,8 @@ import { useTestStore } from '@/store/test-store';
 import { useGamificationStore } from '@/store/gamification-store';
 import { Question, QuestionTransition } from '@/types';
 import { formatTime } from '@/lib/utils';
+import { useTranslation } from 'react-i18next';
+import { getLocalizedQuestion } from '@/lib/localized-questions';
 
 interface AnimatedQuestionCardProps {
   question: Question;

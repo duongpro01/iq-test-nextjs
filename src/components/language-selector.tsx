@@ -25,6 +25,7 @@ import {
   isRTL,
   loadFontsForLocale 
 } from '@/lib/i18n';
+import { useTestStore } from '@/store/test-store';
 
 interface LanguageSelectorProps {
   variant?: 'dropdown' | 'grid' | 'compact';

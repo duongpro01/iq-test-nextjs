@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 export function WelcomeScreen() {
   const [isLoading, setIsLoading] = useState(false);
   const { startTest, config } = useTestStore();
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
 
   const handleStartTest = async () => {
     setIsLoading(true);
