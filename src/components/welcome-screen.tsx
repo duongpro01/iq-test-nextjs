@@ -57,10 +57,7 @@ export function WelcomeScreen() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
-      {/* Language Selector - Top Right */}
-      <div className="fixed top-4 right-4 z-50">
-        <LanguageSelector variant="compact" />
-      </div>
+
       
       <motion.div
         initial={{ opacity: 0, y: 20 }}
@@ -69,7 +66,12 @@ export function WelcomeScreen() {
         className="w-full max-w-4xl"
       >
         <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur-sm">
-          <CardHeader className="text-center pb-8">
+          <CardHeader className="text-center pb-8 relative">
+            {/* Language Selector - Card Header */}
+            <div className="absolute top-4 left-4">
+              <LanguageSelector variant="compact" />
+            </div>
+            
             <motion.div
               initial={{ scale: 0.8 }}
               animate={{ scale: 1 }}
