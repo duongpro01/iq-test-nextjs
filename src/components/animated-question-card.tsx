@@ -54,6 +54,14 @@ export function AnimatedQuestionCard({
     trackEngagement
   } = useGamificationStore();
 
+  // Reset timer and selected answer when question changes
+  useEffect(() => {
+    setTimeRemaining(question.timeLimit);
+    setSelectedAnswer(null);
+    setIsSubmitting(false);
+    setShowHint(false);
+  }, [question.id, question.timeLimit]);
+
   const handleSubmit = useCallback(async (answerIndex: number) => {
     if (isSubmitting) return;
     

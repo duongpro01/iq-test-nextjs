@@ -13,6 +13,9 @@ i18n
     fallbackLng: 'en',
     debug: process.env.NODE_ENV === 'development',
     
+    // Supported languages
+    supportedLngs: ['en', 'fr', 'ar', 'es', 'de', 'zh', 'ja'],
+    
     // Namespace configuration
     ns: ['common', 'test', 'questions', 'results', 'gamification'],
     defaultNS: 'common',
@@ -22,7 +25,10 @@ i18n
       order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
-      checkWhitelist: true,
+      convertDetectedLanguage: (lng: string) => {
+        // Convert en-US to en, fr-FR to fr, etc.
+        return lng.split('-')[0];
+      },
     },
     
     // Backend configuration

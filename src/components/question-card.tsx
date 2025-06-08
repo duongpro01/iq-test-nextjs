@@ -28,6 +28,13 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
     updateTimer
   } = useTestStore();
 
+  // Reset timer and selected answer when question changes
+  useEffect(() => {
+    setTimeRemaining(question.timeLimit);
+    setSelectedAnswer(null);
+    setIsSubmitting(false);
+  }, [question.id, question.timeLimit]);
+
   const handleSubmit = useCallback(async (answerIndex: number) => {
     if (isSubmitting) return;
     

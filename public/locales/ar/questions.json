@@ -1,0 +1,19 @@
+{
+  "categories": {
+    "pattern_recognition": "التعرف على الأنماط",
+    "spatial_reasoning": "التفكير المكاني", 
+    "logical_reasoning": "التفكير المنطقي",
+    "memory": "الذاكرة",
+    "mathematical": "رياضي"
+  },
+  "instructions": {
+    "select_answer": "اختر الإجابة الصحيحة",
+    "time_remaining": "الوقت المتبقي",
+    "question_of": "السؤال {{current}} من {{total}}"
+  },
+  "feedback": {
+    "correct": "صحيح!",
+    "incorrect": "خطأ",
+    "timeout": "انتهى الوقت!"
+  }
+} 

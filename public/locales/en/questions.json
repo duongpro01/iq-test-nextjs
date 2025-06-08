@@ -1,0 +1,19 @@
+{
+  "categories": {
+    "pattern_recognition": "Pattern Recognition",
+    "spatial_reasoning": "Spatial Reasoning", 
+    "logical_reasoning": "Logical Reasoning",
+    "memory": "Memory",
+    "mathematical": "Mathematical"
+  },
+  "instructions": {
+    "select_answer": "Select the correct answer",
+    "time_remaining": "Time remaining",
+    "question_of": "Question {{current}} of {{total}}"
+  },
+  "feedback": {
+    "correct": "Correct!",
+    "incorrect": "Incorrect",
+    "timeout": "Time's up!"
+  }
+} 

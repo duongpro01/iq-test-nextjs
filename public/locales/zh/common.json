@@ -1,0 +1,23 @@
+{
+  "language": {
+    "name": "中文",
+    "code": "zh"
+  },
+  "common": {
+    "loading": "加载中...",
+    "start": "开始",
+    "minutes": "分钟",
+    "seconds": "秒"
+  },
+  "welcome": {
+    "title": "自适应智商测试",
+    "description": "全面的智力评估",
+    "button": {
+      "start": "开始测试"
+    },
+    "credits": {
+      "text": "由 ❤️ 制作",
+      "author": "Abdelkarim Ait Bourich"
+    }
+  }
+} 

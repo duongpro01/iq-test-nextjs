@@ -1,0 +1,19 @@
+{
+  "achievements": {
+    "first_test": "First Test Completed",
+    "high_score": "High Score Achieved",
+    "speed_demon": "Speed Demon",
+    "perfectionist": "Perfect Score"
+  },
+  "badges": {
+    "bronze": "Bronze",
+    "silver": "Silver", 
+    "gold": "Gold",
+    "platinum": "Platinum"
+  },
+  "streaks": {
+    "current": "Current Streak",
+    "best": "Best Streak",
+    "days": "days"
+  }
+} 

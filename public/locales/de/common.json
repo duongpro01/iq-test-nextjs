@@ -1,0 +1,23 @@
+{
+  "language": {
+    "name": "Deutsch",
+    "code": "de"
+  },
+  "common": {
+    "loading": "Laden...",
+    "start": "Starten",
+    "minutes": "Minuten",
+    "seconds": "Sekunden"
+  },
+  "welcome": {
+    "title": "Adaptiver IQ-Test",
+    "description": "Eine umfassende Intelligenzbewertung",
+    "button": {
+      "start": "Test starten"
+    },
+    "credits": {
+      "text": "Gemacht mit ❤️ von",
+      "author": "Abdelkarim Ait Bourich"
+    }
+  }
+} 

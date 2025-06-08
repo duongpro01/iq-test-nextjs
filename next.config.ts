@@ -12,11 +12,7 @@ const nextConfig: NextConfig = {
     // your project has type errors.
     ignoreBuildErrors: true
   },
-  i18n: {
-    locales: ['en', 'fr', 'ar', 'es', 'de', 'zh', 'ja'],
-    defaultLocale: 'en',
-    localeDetection: true,
-  },
+
   // Additional optimizations
   poweredByHeader: false
 };
