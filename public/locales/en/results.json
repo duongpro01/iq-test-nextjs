@@ -1,0 +1,102 @@
+{
+  "title": "Your IQ Test Results",
+  "iq_score": "IQ Score: {{score}}",
+  "classification": {
+    "extremely_gifted": "Extremely Gifted (160+)",
+    "highly_gifted": "Highly Gifted (145-159)",
+    "moderately_gifted": "Moderately Gifted (130-144)",
+    "superior": "Superior (120-129)",
+    "high_average": "High Average (110-119)",
+    "average": "Average (90-109)",
+    "low_average": "Low Average (80-89)",
+    "borderline": "Borderline (70-79)",
+    "extremely_low": "Extremely Low (<70)"
+  },
+  "percentile": {
+    "rank": "{{percentile}}th percentile",
+    "description": "You scored higher than {{percentage}}% of the population",
+    "explanation": "This means that out of 100 people, you would score higher than {{count}} of them"
+  },
+  "overview": {
+    "title": "Performance Overview",
+    "accuracy": "Accuracy: {{percentage}}%",
+    "questions_answered": "Questions Answered: {{count}}",
+    "time_taken": "Time Taken: {{minutes}} minutes",
+    "average_response_time": "Average Response Time: {{seconds}} seconds"
+  },
+  "cognitive_profile": {
+    "title": "Cognitive Profile",
+    "description": "Your performance across different cognitive domains",
+    "domains": {
+      "pattern_recognition": "Pattern Recognition",
+      "spatial_reasoning": "Spatial Reasoning",
+      "logical_deduction": "Logical Deduction",
+      "memory": "Memory",
+      "numerical": "Numerical Reasoning"
+    },
+    "score_explanation": "Scores are normalized to a 0-100 scale"
+  },
+  "ability_progression": {
+    "title": "Ability Progression",
+    "description": "How your estimated ability changed throughout the test",
+    "x_axis": "Question Number",
+    "y_axis": "Ability Estimate"
+  },
+  "response_time": {
+    "title": "Response Time Analysis",
+    "description": "Your response times for each question",
+    "fast": "Fast",
+    "average": "Average", 
+    "slow": "Slow"
+  },
+  "security_analysis": {
+    "title": "Security Analysis",
+    "confidence": "Test Confidence: {{score}}%",
+    "excellent": "Excellent Security",
+    "good": "Good Security",
+    "fair": "Fair Security",
+    "poor": "Poor Security",
+    "events": {
+      "focus_lost": "Focus Lost: {{count}} times",
+      "tab_switches": "Tab Switches: {{count}}",
+      "mouse_events": "Mouse Events: {{count}}",
+      "dev_tools": "Dev Tools: {{count}} detections"
+    }
+  },
+  "comparison": {
+    "title": "Population Comparison",
+    "your_score": "Your Score",
+    "population_average": "Population Average",
+    "age_group": "Age Group Average",
+    "percentile_chart": "Percentile Distribution"
+  },
+  "recommendations": {
+    "title": "Recommendations",
+    "strengths": "Your Strengths",
+    "areas_for_improvement": "Areas for Improvement",
+    "training_suggestions": "Training Suggestions"
+  },
+  "actions": {
+    "retake_test": "Retake Test",
+    "challenge_mode": "Challenge Mode",
+    "export_pdf": "Export PDF",
+    "export_json": "Export JSON",
+    "share_results": "Share Results",
+    "copy_link": "Copy Link"
+  },
+  "sharing": {
+    "title": "Share Your Results",
+    "message": "I just scored {{score}} on this adaptive IQ test! 🧠",
+    "platforms": {
+      "twitter": "Share on Twitter",
+      "facebook": "Share on Facebook",
+      "linkedin": "Share on LinkedIn"
+    },
+    "copied": "Link copied to clipboard!"
+  },
+  "export": {
+    "generating": "Generating {{format}} export...",
+    "success": "Export completed successfully",
+    "error": "Export failed. Please try again."
+  }
+} 

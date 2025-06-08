@@ -11,7 +11,14 @@ const nextConfig: NextConfig = {
     // Warning: This allows production builds to successfully complete even if
     // your project has type errors.
     ignoreBuildErrors: true
-  }
+  },
+  i18n: {
+    locales: ['en', 'fr', 'ar', 'es', 'de', 'zh', 'ja'],
+    defaultLocale: 'en',
+    localeDetection: true,
+  },
+  // Additional optimizations
+  poweredByHeader: false
 };
 
 export default nextConfig;

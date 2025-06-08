@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Brain, Clock, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
+import { LanguageSelector } from '@/components/language-selector';
 
 export function WelcomeScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +57,11 @@ export function WelcomeScreen() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20 flex items-center justify-center p-4">
+      {/* Language Selector - Top Right */}
+      <div className="fixed top-4 right-4 z-50">
+        <LanguageSelector variant="compact" />
+      </div>
+      
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -177,11 +183,22 @@ export function WelcomeScreen() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1.4, duration: 0.5 }}
-              className="text-xs text-muted-foreground text-center pt-4 border-t"
+              className="text-xs text-muted-foreground text-center pt-4 border-t space-y-2"
             >
               <p>
                 This test is for educational and entertainment purposes. 
                 Results should not be used for clinical or professional assessment.
+              </p>
+              <p>
+                Made with ❤️ by{' '}
+                <a 
+                  href="https://github.com/VeinDevTtv" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-primary hover:text-primary/80 transition-colors font-medium"
+                >
+                  Abdelkarim Ait Bourich
+                </a>
               </p>
             </motion.div>
           </CardContent>

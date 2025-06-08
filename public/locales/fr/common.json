@@ -1,0 +1,103 @@
+{
+  "app": {
+    "title": "Système de Test QI Adaptatif",
+    "description": "Passez une évaluation complète de l'intelligence avec difficulté adaptative et analyses en temps réel",
+    "tagline": "Test QI de niveau professionnel en 30 minutes"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "test": "Passer le Test",
+    "results": "Résultats",
+    "leaderboard": "Classement",
+    "about": "À propos",
+    "settings": "Paramètres"
+  },
+  "actions": {
+    "start": "Commencer",
+    "continue": "Continuer",
+    "pause": "Pause",
+    "resume": "Reprendre",
+    "restart": "Redémarrer",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Sauvegarder",
+    "load": "Charger",
+    "export": "Exporter",
+    "share": "Partager",
+    "copy": "Copier",
+    "close": "Fermer",
+    "next": "Suivant",
+    "previous": "Précédent",
+    "finish": "Terminer",
+    "retry": "Réessayer"
+  },
+  "status": {
+    "loading": "Chargement...",
+    "saving": "Sauvegarde...",
+    "processing": "Traitement...",
+    "completed": "Terminé",
+    "failed": "Échec",
+    "success": "Succès",
+    "error": "Erreur",
+    "warning": "Avertissement",
+    "info": "Information"
+  },
+  "time": {
+    "seconds": "secondes",
+    "minutes": "minutes",
+    "hours": "heures",
+    "remaining": "restant",
+    "elapsed": "écoulé",
+    "duration": "Durée"
+  },
+  "numbers": {
+    "score": "Score",
+    "points": "Points",
+    "level": "Niveau",
+    "rank": "Rang",
+    "percentile": "Percentile",
+    "accuracy": "Précision",
+    "total": "Total",
+    "average": "Moyenne"
+  },
+  "language": {
+    "selector": "Langue",
+    "current": "Langue Actuelle",
+    "change": "Changer de Langue",
+    "auto_detect": "Détection Automatique",
+    "browser_default": "Par Défaut du Navigateur"
+  },
+  "accessibility": {
+    "high_contrast": "Contraste Élevé",
+    "large_text": "Texte Large",
+    "reduce_motion": "Réduire les Mouvements",
+    "screen_reader": "Mode Lecteur d'Écran",
+    "keyboard_navigation": "Navigation au Clavier",
+    "dyslexia_friendly": "Adapté à la Dyslexie"
+  },
+  "errors": {
+    "generic": "Une erreur s'est produite. Veuillez réessayer.",
+    "network": "Erreur réseau. Vérifiez votre connexion.",
+    "timeout": "Délai d'attente dépassé. Veuillez réessayer.",
+    "not_found": "Ressource non trouvée.",
+    "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action.",
+    "validation": "Veuillez vérifier votre saisie et réessayer.",
+    "server": "Erreur serveur. Veuillez réessayer plus tard."
+  },
+  "validation": {
+    "required": "Ce champ est requis",
+    "invalid": "Saisie invalide",
+    "too_short": "La saisie est trop courte",
+    "too_long": "La saisie est trop longue",
+    "invalid_email": "Adresse e-mail invalide",
+    "invalid_number": "Nombre invalide"
+  },
+  "footer": {
+    "copyright": "© {{year}} Système de Test QI Adaptatif",
+    "made_by": "Fait avec ❤️ par",
+    "author": "Abdelkarim Ait Bourich",
+    "privacy": "Politique de Confidentialité",
+    "terms": "Conditions d'Utilisation",
+    "contact": "Nous Contacter"
+  }
+} 

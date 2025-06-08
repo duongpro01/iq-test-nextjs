@@ -1,0 +1,103 @@
+{
+  "app": {
+    "title": "Adaptive IQ Test System",
+    "description": "Take a comprehensive intelligence assessment with adaptive difficulty and real-time analytics",
+    "tagline": "Professional-grade IQ testing in 30 minutes"
+  },
+  "navigation": {
+    "home": "Home",
+    "test": "Take Test",
+    "results": "Results",
+    "leaderboard": "Leaderboard",
+    "about": "About",
+    "settings": "Settings"
+  },
+  "actions": {
+    "start": "Start",
+    "continue": "Continue",
+    "pause": "Pause",
+    "resume": "Resume",
+    "restart": "Restart",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "load": "Load",
+    "export": "Export",
+    "share": "Share",
+    "copy": "Copy",
+    "close": "Close",
+    "next": "Next",
+    "previous": "Previous",
+    "finish": "Finish",
+    "retry": "Retry"
+  },
+  "status": {
+    "loading": "Loading...",
+    "saving": "Saving...",
+    "processing": "Processing...",
+    "completed": "Completed",
+    "failed": "Failed",
+    "success": "Success",
+    "error": "Error",
+    "warning": "Warning",
+    "info": "Information"
+  },
+  "time": {
+    "seconds": "seconds",
+    "minutes": "minutes",
+    "hours": "hours",
+    "remaining": "remaining",
+    "elapsed": "elapsed",
+    "duration": "Duration"
+  },
+  "numbers": {
+    "score": "Score",
+    "points": "Points",
+    "level": "Level",
+    "rank": "Rank",
+    "percentile": "Percentile",
+    "accuracy": "Accuracy",
+    "total": "Total",
+    "average": "Average"
+  },
+  "language": {
+    "selector": "Language",
+    "current": "Current Language",
+    "change": "Change Language",
+    "auto_detect": "Auto-detect",
+    "browser_default": "Browser Default"
+  },
+  "accessibility": {
+    "high_contrast": "High Contrast",
+    "large_text": "Large Text",
+    "reduce_motion": "Reduce Motion",
+    "screen_reader": "Screen Reader Mode",
+    "keyboard_navigation": "Keyboard Navigation",
+    "dyslexia_friendly": "Dyslexia Friendly"
+  },
+  "errors": {
+    "generic": "An error occurred. Please try again.",
+    "network": "Network error. Please check your connection.",
+    "timeout": "Request timed out. Please try again.",
+    "not_found": "Resource not found.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "validation": "Please check your input and try again.",
+    "server": "Server error. Please try again later."
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid": "Invalid input",
+    "too_short": "Input is too short",
+    "too_long": "Input is too long",
+    "invalid_email": "Invalid email address",
+    "invalid_number": "Invalid number"
+  },
+  "footer": {
+    "copyright": "© {{year}} Adaptive IQ Test System",
+    "made_by": "Made with ❤️ by",
+    "author": "Abdelkarim Ait Bourich",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "contact": "Contact Us"
+  }
+} 

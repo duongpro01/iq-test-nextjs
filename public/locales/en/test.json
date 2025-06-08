@@ -1,0 +1,94 @@
+{
+  "welcome": {
+    "title": "Adaptive IQ Test System",
+    "subtitle": "Professional-grade cognitive assessment",
+    "description": "Take a comprehensive intelligence assessment with adaptive difficulty and real-time analytics. Get professional-grade results in just 30 minutes.",
+    "start_button": "Start IQ Test",
+    "preparing": "Preparing Test..."
+  },
+  "features": {
+    "adaptive_difficulty": {
+      "title": "Adaptive Difficulty",
+      "description": "Questions adjust to your skill level in real-time using advanced algorithms"
+    },
+    "timed_assessment": {
+      "title": "Timed Assessment",
+      "description": "30-minute comprehensive test with per-question time limits"
+    },
+    "multiple_categories": {
+      "title": "Multiple Categories",
+      "description": "Pattern recognition, spatial reasoning, logic, memory, and math puzzles"
+    },
+    "realtime_scoring": {
+      "title": "Real-time Scoring",
+      "description": "Advanced IRT-based scoring with percentile rankings"
+    },
+    "standardized_results": {
+      "title": "Standardized Results",
+      "description": "Results comparable to professional IQ assessments"
+    },
+    "instant_analytics": {
+      "title": "Instant Analytics",
+      "description": "Detailed performance breakdown and improvement insights"
+    }
+  },
+  "instructions": {
+    "title": "Instructions",
+    "rules": [
+      "Answer each question to the best of your ability",
+      "Questions will adapt to your performance level",
+      "You cannot go back to previous questions",
+      "Take your time but be mindful of the timer",
+      "Ensure you have a stable internet connection",
+      "Find a quiet environment free from distractions"
+    ]
+  },
+  "test_info": {
+    "title": "Test Information",
+    "duration": "Duration: {{minutes}} minutes",
+    "questions": "Questions: {{count}} adaptive",
+    "difficulty": "Difficulty: 1-10 scale"
+  },
+  "question": {
+    "number": "Question {{current}} of {{total}}",
+    "time_remaining": "Time remaining: {{time}}",
+    "select_answer": "Select an answer or click \"Skip Question\" to continue",
+    "submit_answer": "Click \"Submit Answer\" to proceed to the next question",
+    "skip": "Skip Question",
+    "submit": "Submit Answer",
+    "loading": "Loading next question...",
+    "explanation": "Explanation",
+    "difficulty_level": "Difficulty Level: {{level}}"
+  },
+  "categories": {
+    "pattern_recognition": "Pattern Recognition",
+    "spatial_reasoning": "Spatial Reasoning", 
+    "logical_deduction": "Logical Deduction",
+    "short_term_memory": "Short-Term Memory",
+    "numerical_reasoning": "Numerical Reasoning"
+  },
+  "progress": {
+    "completed": "{{completed}} of {{total}} questions completed",
+    "time_elapsed": "Time elapsed: {{time}}",
+    "current_score": "Current estimated IQ: {{score}}",
+    "accuracy": "Accuracy: {{percentage}}%"
+  },
+  "security": {
+    "warning": "Security Warning",
+    "tab_switch": "Tab switching detected",
+    "focus_lost": "Window focus lost",
+    "suspicious_activity": "Suspicious activity detected",
+    "confidence_score": "Test confidence: {{score}}%",
+    "maintain_focus": "Please maintain focus on the test window"
+  },
+  "completion": {
+    "title": "Test Completed!",
+    "processing": "Processing your results...",
+    "thank_you": "Thank you for taking the test",
+    "view_results": "View Results"
+  },
+  "disclaimer": {
+    "text": "This test is for educational and entertainment purposes. Results should not be used for clinical or professional assessment.",
+    "made_by": "Made with ❤️ by {{author}}"
+  }
+} 
