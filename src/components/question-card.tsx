@@ -93,7 +93,7 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
             <div className="flex justify-between items-center text-sm">
               <span className="font-medium">Question {questionNumber} of {totalQuestions}</span>
               <span className="text-muted-foreground">
-                Ability Level: {currentSession?.abilityEstimate.toFixed(1) || '0.0'}
+                Ability Level: {currentSession?.abilityEstimate?.toFixed(1) || '0.0'}
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />

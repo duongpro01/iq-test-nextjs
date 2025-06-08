@@ -132,7 +132,7 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
           <CardHeader className="text-center pb-4">
             <CardTitle className="text-2xl">Your IQ Score</CardTitle>
             <CardDescription>
-              Based on {result.totalQuestions} questions with {result.accuracy.toFixed(1)}% accuracy
+              Based on {result.totalQuestions} questions with {(result.accuracy || 0).toFixed(1)}% accuracy
             </CardDescription>
           </CardHeader>
           <CardContent className="text-center space-y-6">
@@ -155,13 +155,13 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
               </div>
               <div className="text-center">
                 <div className="text-2xl font-semibold text-green-600">
-                  {(result.measurementPrecision).toFixed(1)}
+                  {(result.measurementPrecision || 0).toFixed(1)}
                 </div>
                 <div className="text-sm text-gray-500">Precision</div>
               </div>
               <div className="text-center">
                 <div className="text-2xl font-semibold text-purple-600">
-                  {(result.testReliability * 100).toFixed(1)}%
+                  {((result.testReliability || 0) * 100).toFixed(1)}%
                 </div>
                 <div className="text-sm text-gray-500">Reliability</div>
               </div>
@@ -190,8 +190,8 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
               <Award className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{result.accuracy.toFixed(1)}%</div>
-              <Progress value={result.accuracy} className="mt-2" />
+              <div className="text-2xl font-bold">{(result.accuracy || 0).toFixed(1)}%</div>
+              <Progress value={result.accuracy || 0} className="mt-2" />
             </CardContent>
           </Card>
 
@@ -348,11 +348,11 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
                     </div>
                     <div>
                       <span className="text-gray-500">Ability Estimate:</span>
-                      <span className="ml-2 font-medium">{analysis.abilityEstimate.toFixed(2)}</span>
+                      <span className="ml-2 font-medium">{(analysis.abilityEstimate || 0).toFixed(2)}</span>
                     </div>
                     <div>
                       <span className="text-gray-500">Standard Error:</span>
-                      <span className="ml-2 font-medium">{analysis.standardError.toFixed(2)}</span>
+                      <span className="ml-2 font-medium">{(analysis.standardError || 0).toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -489,7 +489,7 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-4 border rounded-lg">
                 <div className="text-2xl font-bold text-green-600">
-                  {(result.cronbachAlpha * 100).toFixed(1)}%
+                  {((result.cronbachAlpha || 0) * 100).toFixed(1)}%
                 </div>
                 <div className="text-sm text-gray-500 mt-1">Internal Consistency</div>
                 <div className="text-xs text-gray-400 mt-2">
@@ -499,7 +499,7 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
               
               <div className="text-center p-4 border rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">
-                  ±{(result.standardError * 15).toFixed(1)}
+                  ±{((result.standardError || 0) * 15).toFixed(1)}
                 </div>
                 <div className="text-sm text-gray-500 mt-1">Measurement Error</div>
                 <div className="text-xs text-gray-400 mt-2">
@@ -509,7 +509,7 @@ export function ResultsDashboard({ result, onRestart }: ResultsDashboardProps) {
               
               <div className="text-center p-4 border rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">
-                  {(result.testReliability * 100).toFixed(1)}%
+                  {((result.testReliability || 0) * 100).toFixed(1)}%
                 </div>
                 <div className="text-sm text-gray-500 mt-1">Test Reliability</div>
                 <div className="text-xs text-gray-400 mt-2">

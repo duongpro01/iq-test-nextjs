@@ -79,7 +79,7 @@ export default function Home() {
   }, [currentSession]);
 
   // Show results if test is completed
-  if (testResult) {
+  if (testResult && testResult.estimatedIQ && testResult.accuracy !== undefined) {
     return <ResultsDashboard result={testResult} onRestart={resetTest} />;
   }
 
