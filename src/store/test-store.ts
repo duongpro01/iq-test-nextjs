@@ -14,6 +14,10 @@ import {
 } from '@/types';
 import { questions } from '@/data/questions';
 import { irtEngine } from '@/lib/irt-engine';
+import { getLocalizedQuestions } from '@/lib/localized-questions';
+import i18n from '@/lib/i18n';
+import { questionService } from '@/services/question-service';
+import { getCurrentLocale } from '@/lib/i18n';
 
 interface TestStore {
   // Current test session
@@ -112,7 +116,10 @@ export const useTestStore = create<TestStore>()(
 
       startTest: () => {
         const sessionId = generateSessionId();
-        const shuffledQuestions = shuffleArray(questions);
+        // Get localized questions based on current language
+        const currentLocale = i18n.language || 'en';
+        const localizedQuestions = getLocalizedQuestions(currentLocale);
+        const shuffledQuestions = shuffleArray(localizedQuestions);
         
         // Initialize domain coverage tracking
         const domainCoverage: Record<QuestionCategory, number> = {
