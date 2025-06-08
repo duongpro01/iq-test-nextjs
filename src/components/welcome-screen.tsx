@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Brain, Clock, Target, TrendingUp, Users, Zap } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
-import { organizeQuestionPools } from '@/data/questions';
 
 export function WelcomeScreen() {
   const [isLoading, setIsLoading] = useState(false);
@@ -14,10 +13,6 @@ export function WelcomeScreen() {
 
   const handleStartTest = async () => {
     setIsLoading(true);
-    
-    // Initialize question pools
-    const questionPools = organizeQuestionPools();
-    useTestStore.setState({ questionPools });
     
     // Small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 1000));

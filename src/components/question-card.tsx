@@ -24,10 +24,8 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
   
   const { 
     submitAnswer, 
-    nextQuestion, 
     currentSession, 
-    updateTimer,
-    config 
+    updateTimer
   } = useTestStore();
 
   const handleSubmit = useCallback(async (answerIndex: number) => {
@@ -35,16 +33,14 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
     
     setIsSubmitting(true);
     
-    // Submit answer
+    // Submit answer (this automatically moves to next question)
     submitAnswer(answerIndex);
     
     // Small delay for better UX
     await new Promise(resolve => setTimeout(resolve, 800));
     
-    // Move to next question
-    nextQuestion();
     setIsSubmitting(false);
-  }, [isSubmitting, submitAnswer, nextQuestion]);
+  }, [isSubmitting, submitAnswer]);
 
   // Question timer
   useEffect(() => {
@@ -66,14 +62,12 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
   useEffect(() => {
     const globalTimer = setInterval(() => {
       if (currentSession) {
-        const elapsed = Math.floor((Date.now() - currentSession.startTime.getTime()) / 1000);
-        const remaining = Math.max(0, config.globalTimeLimit - elapsed);
-        updateTimer(remaining);
+        updateTimer();
       }
     }, 1000);
 
     return () => clearInterval(globalTimer);
-  }, [currentSession, config.globalTimeLimit, updateTimer]);
+  }, [currentSession, updateTimer]);
 
   const progressPercentage = ((questionNumber - 1) / totalQuestions) * 100;
   const timeProgressPercentage = (timeRemaining / question.timeLimit) * 100;
@@ -99,7 +93,7 @@ export function QuestionCard({ question, questionNumber, totalQuestions }: Quest
             <div className="flex justify-between items-center text-sm">
               <span className="font-medium">Question {questionNumber} of {totalQuestions}</span>
               <span className="text-muted-foreground">
-                Difficulty Level: {currentSession?.difficultyLevel || 5}
+                Ability Level: {currentSession?.abilityEstimate.toFixed(1) || '0.0'}
               </span>
             </div>
             <Progress value={progressPercentage} className="h-2" />
