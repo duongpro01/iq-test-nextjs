@@ -44,6 +44,8 @@ export interface TestSession {
   // Domain balancing
   domainCoverage: Record<QuestionCategory, number>;
   targetDomainBalance: Record<QuestionCategory, number>;
+  // Configuration
+  config: AdaptiveTestConfig;
 }
 
 export interface UserAnswer {

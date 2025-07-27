@@ -1,20 +1,13 @@
 module.exports = {
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'fr', 'ar', 'es', 'de', 'zh', 'ja'],
+    locales: ['en'],
     localePath: './public/locales',
-    localeDetection: true,
+    localeDetection: false,
   },
   fallbackLng: 'en',
   debug: process.env.NODE_ENV === 'development',
   reloadOnPrerender: process.env.NODE_ENV === 'development',
-  
-  // RTL support
-  rtl: {
-    ar: true,
-    he: true,
-    fa: true,
-  },
   
   // Namespace configuration
   ns: ['common', 'test', 'questions', 'results', 'gamification'],
@@ -58,7 +51,7 @@ module.exports = {
   
   // Custom detection order
   detection: {
-    order: ['localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
+    order: ['localStorage', 'navigator', 'htmlTag'],
     caches: ['localStorage'],
     excludeCacheFor: ['cimode'],
     lookupLocalStorage: 'i18nextLng',

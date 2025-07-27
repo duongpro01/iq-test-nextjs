@@ -68,12 +68,12 @@ class SecurityEngine {
   constructor(config: SecurityConfig = {
     enableMouseTracking: true,
     enableFocusMonitoring: true,
-    enableKeyboardBlocking: true,
+    enableKeyboardBlocking: false, // Disable keyboard blocking
     maxBlurDuration: 30,
     maxTabSwitches: 3,
     suspiciousSpeedThreshold: 5,
     mouseVelocityThreshold: 1000,
-    enableRealTimeWarnings: true
+    enableRealTimeWarnings: false // Disable real-time warnings
   }) {
     this.config = config;
     this.metrics = this.initializeMetrics();
@@ -230,63 +230,16 @@ class SecurityEngine {
    * Handle keyboard events
    */
   private handleKeyDown(event: globalThis.KeyboardEvent): void {
-    const blockedKeys = [
-      'F12', // Developer tools
-      'F5',  // Refresh
-      'F11', // Fullscreen
-    ];
-    
-    const blockedCombinations = [
-      { ctrl: true, shift: true, key: 'I' }, // Dev tools
-      { ctrl: true, shift: true, key: 'J' }, // Console
-      { ctrl: true, shift: true, key: 'C' }, // Inspector
-      { ctrl: true, key: 'U' },              // View source
-      { ctrl: true, key: 'R' },              // Refresh
-      { ctrl: true, key: 'F5' },             // Hard refresh
-      { alt: true, key: 'Tab' },             // Alt+Tab
-    ];
-    
-    let isBlocked = false;
-    
-    // Check single keys
-    if (blockedKeys.includes(event.key)) {
-      event.preventDefault();
-      isBlocked = true;
-    }
-    
-    // Check key combinations
-    blockedCombinations.forEach(combo => {
-      if (
-        (combo.ctrl === undefined || combo.ctrl === event.ctrlKey) &&
-        (combo.shift === undefined || combo.shift === event.shiftKey) &&
-        (combo.alt === undefined || combo.alt === event.altKey) &&
-        combo.key === event.key
-      ) {
-        event.preventDefault();
-        isBlocked = true;
-      }
-    });
-    
+    // Allow all keyboard shortcuts
     const keyboardEvent: KeyboardEvent = {
       type: 'keydown',
       key: event.key,
       timestamp: Date.now(),
       questionId: this.currentQuestionId,
-      isBlocked
+      isBlocked: false
     };
     
     this.metrics.keyboardEvents.push(keyboardEvent);
-    
-    if (isBlocked) {
-      this.addSuspiciousPattern({
-        type: 'keyboard_anomaly',
-        severity: 'medium',
-        description: `Blocked keyboard shortcut: ${event.key}`,
-        evidence: [keyboardEvent],
-        timestamp: Date.now(),
-        questionIds: [this.currentQuestionId]
-      });
-    }
   }
 
   /**
@@ -343,16 +296,8 @@ class SecurityEngine {
    * Handle context menu events
    */
   private handleContextMenu(event: MouseEvent): void {
-    event.preventDefault();
-    
-    this.addSuspiciousPattern({
-      type: 'mouse_anomaly',
-      severity: 'low',
-      description: 'Right-click attempted',
-      evidence: [{ x: event.clientX, y: event.clientY, timestamp: Date.now() }],
-      timestamp: Date.now(),
-      questionIds: [this.currentQuestionId]
-    });
+    // Allow context menu
+    return;
   }
 
   /**

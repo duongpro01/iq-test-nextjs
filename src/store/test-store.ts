@@ -39,6 +39,11 @@ interface TestStore {
   resetTest: () => void;
   updateTimer: () => void;
   
+  // Navigation actions
+  goToQuestion: (index: number) => void;
+  goToNextQuestion: () => void;
+  goToPreviousQuestion: () => void;
+  
   // Advanced analytics
   calculateAdvancedResults: () => TestResult;
   getDomainAnalysis: (category: QuestionCategory) => DomainAnalysis;
@@ -151,7 +156,8 @@ export const useTestStore = create<TestStore>()(
           isCompleted: false,
           isPaused: false,
           domainCoverage,
-          targetDomainBalance
+          targetDomainBalance,
+          config: get().config // Add config to session
         };
 
         set({ 
@@ -236,6 +242,11 @@ export const useTestStore = create<TestStore>()(
         const updatedDomainCoverage = { ...currentSession.domainCoverage };
         updatedDomainCoverage[currentQuestion.category]++;
 
+        // Check if this is the last question
+        const isLastQuestion = currentSession.currentQuestionIndex === currentSession.questions.length - 1;
+        const allQuestionsAnswered = currentSession.answers.length + 1 >= currentSession.questions.length;
+
+        // Prepare the updated session
         const updatedSession: TestSession = {
           ...currentSession,
           currentQuestionIndex: currentSession.currentQuestionIndex + 1,
@@ -244,19 +255,22 @@ export const useTestStore = create<TestStore>()(
           abilityHistory: [...currentSession.abilityHistory, bayesianEstimate.ability],
           standardError: bayesianEstimate.standardError,
           domainCoverage: updatedDomainCoverage,
-          isCompleted: currentSession.currentQuestionIndex + 1 >= config.totalQuestions ||
-                      bayesianEstimate.standardError <= config.targetStandardError
+          isCompleted: isLastQuestion && allQuestionsAnswered
         };
 
-        set({ currentSession: updatedSession });
+        // Use Promise.resolve().then to avoid setState during render
+        Promise.resolve().then(() => {
+          // Update session state
+          set({ currentSession: updatedSession });
 
-        // Update security metrics
-        get().updateSecurityMetrics(userAnswer);
+          // Update security metrics
+          get().updateSecurityMetrics(userAnswer);
 
-        // End test if completed
-        if (updatedSession.isCompleted) {
-          get().endTest();
-        }
+          // End test only if all questions are answered
+          if (updatedSession.isCompleted && allQuestionsAnswered) {
+            get().endTest();
+          }
+        });
       },
 
       updateAbilityEstimate: () => {
@@ -313,6 +327,10 @@ export const useTestStore = create<TestStore>()(
       endTest: () => {
         const { currentSession } = get();
         if (!currentSession) return;
+
+        // Check if all questions are answered
+        const allQuestionsAnswered = currentSession.answers.length >= currentSession.questions.length;
+        if (!allQuestionsAnswered) return;
 
         const endTime = new Date();
         const result = get().calculateAdvancedResults();
@@ -639,14 +657,80 @@ export const useTestStore = create<TestStore>()(
 
           return { securityMetrics: newMetrics };
         });
-      }
+      },
+
+      goToQuestion: (index: number) => {
+        const { currentSession } = get();
+        if (!currentSession) return;
+
+        // Validate index
+        if (index < 0 || index >= currentSession.questions.length) return;
+
+        // Only allow navigation to answered questions or the next unanswered question
+        if (index > currentSession.answers.length) return;
+
+        set({
+          currentSession: {
+            ...currentSession,
+            currentQuestionIndex: index
+          }
+        });
+      },
+
+      goToNextQuestion: () => {
+        const { currentSession } = get();
+        if (!currentSession) return;
+
+        const nextIndex = currentSession.currentQuestionIndex + 1;
+        get().goToQuestion(nextIndex);
+      },
+
+      goToPreviousQuestion: () => {
+        const { currentSession } = get();
+        if (!currentSession) return;
+
+        const prevIndex = currentSession.currentQuestionIndex - 1;
+        get().goToQuestion(prevIndex);
+      },
     }),
     {
       name: 'iq-test-storage',
       partialize: (state) => ({
         testResult: state.testResult,
-        config: state.config
-      })
+        config: state.config,
+        currentSession: state.currentSession ? {
+          ...state.currentSession,
+          // Convert dates to ISO strings for storage
+          startTime: state.currentSession.startTime.toISOString(),
+          endTime: state.currentSession.endTime?.toISOString()
+        } : null
+      }),
+      // Add storage event listener for cross-tab synchronization
+      onRehydrateStorage: () => (state) => {
+        // Validate and clean up state after rehydration
+        if (state?.currentSession) {
+          const now = new Date();
+          
+          // Convert ISO strings back to Date objects
+          state.currentSession.startTime = new Date(state.currentSession.startTime);
+          if (state.currentSession.endTime) {
+            state.currentSession.endTime = new Date(state.currentSession.endTime);
+          }
+          
+          const timeElapsed = Math.floor((now.getTime() - state.currentSession.startTime.getTime()) / 1000);
+          
+          // Update time remaining
+          state.currentSession.globalTimeRemaining = Math.max(
+            0,
+            state.config.globalTimeLimit - timeElapsed
+          );
+
+          // End test if time has expired
+          if (state.currentSession.globalTimeRemaining === 0) {
+            state.endTest();
+          }
+        }
+      }
     }
   )
 ); 

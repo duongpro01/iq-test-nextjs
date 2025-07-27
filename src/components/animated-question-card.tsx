@@ -37,6 +37,9 @@ export function AnimatedQuestionCard({
   totalQuestions,
   transition = { type: 'slide', duration: 0.5, easing: 'easeInOut', direction: 'right' }
 }: AnimatedQuestionCardProps) {
+  // Return early if no question
+  if (!question) return null;
+
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [timeRemaining, setTimeRemaining] = useState(question.timeLimit);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -58,14 +61,15 @@ export function AnimatedQuestionCard({
 
   // Reset timer and selected answer when question changes
   useEffect(() => {
+    if (!question) return;
     setTimeRemaining(question.timeLimit);
     setSelectedAnswer(null);
     setIsSubmitting(false);
     setShowHint(false);
-  }, [question.id, question.timeLimit]);
+  }, [question?.id, question?.timeLimit]);
 
   const handleSubmit = useCallback(async (answerIndex: number) => {
-    if (isSubmitting) return;
+    if (isSubmitting || !question) return;
     
     setIsSubmitting(true);
     trackEngagement('question_answered', { 
@@ -93,19 +97,34 @@ export function AnimatedQuestionCard({
 
   // Question timer
   useEffect(() => {
+    if (!question) return;
+
+    let timeoutId: NodeJS.Timeout;
+    
     const timer = setInterval(() => {
       setTimeRemaining(prev => {
         if (prev <= 1) {
-          // Auto-submit when time runs out
-          handleSubmit(selectedAnswer ?? -1);
+          // Clear the interval first
+          clearInterval(timer);
+          
+          // Schedule auto-submit with a small delay
+          timeoutId = setTimeout(() => {
+            handleSubmit(selectedAnswer ?? -1);
+          }, 100);
+          
           return 0;
         }
         return prev - 1;
       });
     }, 1000);
 
-    return () => clearInterval(timer);
-  }, [selectedAnswer, handleSubmit]);
+    return () => {
+      clearInterval(timer);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+    };
+  }, [selectedAnswer, handleSubmit, question]);
 
   // Global timer
   useEffect(() => {
@@ -417,7 +436,7 @@ export function AnimatedQuestionCard({
                 onClick={() => handleSubmit(selectedAnswer ?? -1)}
                 disabled={isSubmitting}
                 size="lg"
-                className="min-w-[200px] relative overflow-hidden"
+                className="min-w-[200px]"
               >
                 {isSubmitting ? (
                   <motion.div 
@@ -439,17 +458,6 @@ export function AnimatedQuestionCard({
                   >
                     {selectedAnswer !== null ? 'Submit Answer' : 'Skip Question'}
                   </motion.span>
-                )}
-                
-                {/* XP Preview */}
-                {selectedAnswer !== null && !isSubmitting && (
-                  <motion.div
-                    initial={{ opacity: 0, x: 10 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    className="absolute right-2 top-1/2 transform -translate-y-1/2 text-xs bg-green-500 text-white px-2 py-1 rounded-full"
-                  >
-                    +{20 + (timeRemaining > question.timeLimit * 0.5 ? 10 : 0) + streakBonus} XP
-                  </motion.div>
                 )}
               </Button>
             </motion.div>

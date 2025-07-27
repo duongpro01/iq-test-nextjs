@@ -8,26 +8,35 @@ export function cn(...inputs: ClassValue[]) {
 export function formatTime(seconds: number): string {
   const minutes = Math.floor(seconds / 60);
   const remainingSeconds = seconds % 60;
-  return `${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+  return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
 }
 
-export function formatTimeDetailed(milliseconds: number): string {
-  const totalSeconds = Math.floor(milliseconds / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  const seconds = totalSeconds % 60;
-  const ms = milliseconds % 1000;
-  
-  if (minutes > 0) {
-    return `${minutes}m ${seconds}s`;
-  } else if (seconds > 0) {
-    return `${seconds}.${Math.floor(ms / 100)}s`;
-  } else {
-    return `${ms}ms`;
-  }
+export function formatDate(date: Date): string {
+  return new Intl.DateTimeFormat('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
 }
 
-export function generateId(): string {
-  return Math.random().toString(36).substring(2) + Date.now().toString(36);
+export function formatNumber(number: number): string {
+  return new Intl.NumberFormat('en-US').format(number);
+}
+
+export function formatPercent(number: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'percent',
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  }).format(number / 100);
+}
+
+export function delay(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export function generateSessionId(): string {
+  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 }
 
 export function shuffleArray<T>(array: T[]): T[] {
