@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Brain, Clock, Target, TrendingUp, Users, Zap } from 'lucide-react';
+import { Brain, Clock, Target, TrendingUp, Users, Zap, Settings } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
 import { LanguageSelector } from '@/components/language-selector';
 import { useTranslation } from 'react-i18next';
@@ -73,6 +73,19 @@ export default function HomePage() {
             {/* Language Selector - Card Header */}
             <div className="absolute top-4 left-4">
               <LanguageSelector />
+            </div>
+            
+            {/* Settings Button - Card Header */}
+            <div className="absolute top-4 right-4">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => router.push('/settings')}
+                className="flex items-center space-x-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Settings</span>
+              </Button>
             </div>
             
             <motion.div

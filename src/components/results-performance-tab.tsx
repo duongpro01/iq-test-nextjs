@@ -19,6 +19,7 @@ import {
   Tooltip
 } from 'recharts';
 import { TestResult } from '@/types';
+import { AdaptiveProgressionChart } from '@/components/adaptive-progression-chart';
 
 interface ResultsPerformanceTabProps {
   result: TestResult;
@@ -154,6 +155,9 @@ export function ResultsPerformanceTab({
           </div>
         </CardContent>
       </Card>
+
+      {/* Adaptive Test Progression Chart */}
+      <AdaptiveProgressionChart result={result} />
     </motion.div>
   );
 } 

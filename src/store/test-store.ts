@@ -56,6 +56,9 @@ interface TestStore {
   
   // Helper methods
   updateSecurityMetrics: (answer: UserAnswer) => void;
+  
+  // Configuration methods
+  updateConfig: (newConfig: AdaptiveTestConfig) => void;
 }
 
 const defaultConfig: AdaptiveTestConfig = {
@@ -691,6 +694,10 @@ export const useTestStore = create<TestStore>()(
 
         const prevIndex = currentSession.currentQuestionIndex - 1;
         get().goToQuestion(prevIndex);
+      },
+
+      updateConfig: (newConfig: AdaptiveTestConfig) => {
+        set({ config: newConfig });
       },
     }),
     {
