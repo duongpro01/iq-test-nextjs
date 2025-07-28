@@ -32,13 +32,8 @@ export function TestProgress() {
   return (
     <div className="flex-1 space-y-2">
       <div className="flex items-center justify-between mb-2">
-        <div className="flex items-center gap-4">
-          <div className="text-sm font-medium">
-            Questions: {answeredQuestions}/{totalQuestions}
-          </div>
-          <div className="text-sm text-muted-foreground">
-            Remaining: {remainingQuestions}
-          </div>
+        <div className="text-sm font-medium">
+          {answeredQuestions}/{totalQuestions} completed
         </div>
         <Button
           onClick={handleSubmitTest}
@@ -54,7 +49,7 @@ export function TestProgress() {
           ) : (
             <>
               <AlertCircle className="w-4 h-4" />
-              {remainingQuestions} Questions Left
+              {remainingQuestions} left
             </>
           )}
         </Button>
@@ -69,15 +64,6 @@ export function TestProgress() {
         aria-valuenow={progress}
         aria-valuetext={`${Math.round(progress)}% complete`}
       />
-      
-      <div className="flex justify-between text-xs text-muted-foreground">
-        <div>
-          Completed: {answeredQuestions} questions
-        </div>
-        <div>
-          {progress.toFixed(1)}%
-        </div>
-      </div>
     </div>
   );
 } 

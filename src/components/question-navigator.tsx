@@ -22,12 +22,8 @@ export function QuestionNavigator() {
 
   return (
     <div className="space-y-4">
-      <div className="text-center text-sm text-muted-foreground">
-        Progress: {answeredQuestions.size} of {totalQuestions} completed
-      </div>
-      
       <div className="text-center text-sm text-muted-foreground mb-4">
-        Click to navigate
+        Click to navigate between questions
       </div>
 
       <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1.5 sm:gap-2">

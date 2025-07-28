@@ -2,9 +2,6 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { CheatDetectionOverlay } from '@/components/cheat-detection-overlay';
-import { TestProgress } from '@/components/test-progress';
-import { TestTimer } from '@/components/test-timer';
 import { TestNavigation } from '@/components/test-navigation';
 import { useTestStore } from '@/store/test-store';
 
@@ -48,14 +45,6 @@ export default function TestLayout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="container flex h-14 items-center gap-4">
-          <TestProgress />
-          <TestTimer />
-        </div>
-      </header>
-
       {/* Main content */}
       <main className="flex-1 container py-6">
         {children}
@@ -67,9 +56,6 @@ export default function TestLayout({
           <TestNavigation />
         </div>
       </nav>
-
-      {/* Cheat detection overlay */}
-      <CheatDetectionOverlay />
     </div>
   );
 } 

@@ -7,7 +7,6 @@ import { AnimatedQuestionCard } from '@/components/animated-question-card';
 import { LoadingQuestion } from '@/components/loading-question';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { QuestionNavigator } from '@/components/question-navigator';
-import { TestHeader } from '@/components/test-header';
 import { useTestStore } from '@/store/test-store';
 import { useToast } from '@/components/ui/use-toast';
 
@@ -146,55 +145,45 @@ export default function TestPage() {
 
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-background">
-        {/* Fixed Header */}
-        <div className="sticky top-0 z-50 border-b">
-          <TestHeader />
+      <div className="space-y-6 md:space-y-8">
+        {/* Question Card */}
+        <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+          <AnimatePresence initial={false} custom={direction}>
+            <motion.div
+              key={currentSession.currentQuestionIndex}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{
+                x: { type: "spring", stiffness: 300, damping: 30 },
+                opacity: { duration: 0.2 }
+              }}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={1}
+              onDragEnd={handleDragEnd}
+              className="w-full"
+            >
+              <AnimatedQuestionCard
+                question={currentQuestion}
+                questionNumber={currentSession.currentQuestionIndex + 1}
+                totalQuestions={currentSession.questions.length}
+                transition={{
+                  type: 'slide',
+                  duration: 0.5,
+                  easing: 'easeInOut',
+                  direction: direction > (currentSession.currentQuestionIndex - 1) ? 'right' : 'left'
+                }}
+              />
+            </motion.div>
+          </AnimatePresence>
         </div>
 
-        {/* Main Content */}
-        <div className="container max-w-4xl mx-auto px-4 py-6 md:py-8 lg:py-12">
-          <div className="space-y-6 md:space-y-8">
-            {/* Question Card */}
-            <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-              <AnimatePresence initial={false} custom={direction}>
-                <motion.div
-                  key={currentSession.currentQuestionIndex}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: "spring", stiffness: 300, damping: 30 },
-                    opacity: { duration: 0.2 }
-                  }}
-                  drag="x"
-                  dragConstraints={{ left: 0, right: 0 }}
-                  dragElastic={1}
-                  onDragEnd={handleDragEnd}
-                  className="w-full"
-                >
-                  <AnimatedQuestionCard
-                    question={currentQuestion}
-                    questionNumber={currentSession.currentQuestionIndex + 1}
-                    totalQuestions={currentSession.questions.length}
-                    transition={{
-                      type: 'slide',
-                      duration: 0.5,
-                      easing: 'easeInOut',
-                      direction: direction > (currentSession.currentQuestionIndex - 1) ? 'right' : 'left'
-                    }}
-                  />
-                </motion.div>
-              </AnimatePresence>
-            </div>
-
-            {/* Question Navigator */}
-            <div className="bg-card rounded-lg shadow-lg p-4 md:p-6">
-              <QuestionNavigator />
-            </div>
-          </div>
+        {/* Question Navigator */}
+        <div className="bg-card rounded-lg shadow-lg p-4 md:p-6">
+          <QuestionNavigator />
         </div>
       </div>
     </ErrorBoundary>
