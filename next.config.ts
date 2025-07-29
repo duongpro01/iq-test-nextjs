@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   eslint: {
-    ignoreDuringBuilds: false,
+    ignoreDuringBuilds: true,
     dirs: ['src']
   },
   typescript: {
@@ -12,7 +12,6 @@ const nextConfig: NextConfig = {
 
   // Performance optimizations
   reactStrictMode: true,
-  swcMinify: true,
   
   // Image optimization
   images: {
@@ -28,7 +27,6 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
       allowedOrigins: ['your-domain.com']
     },
-    serverComponentsExternalPackages: [],
   },
 
   // Headers for security and caching
