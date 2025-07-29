@@ -8,6 +8,9 @@ export interface Question {
   image?: string; // SVG or base64 image data
   timeLimit: number; // seconds
   explanation?: string;
+  // Interactive task data
+  taskType?: TaskType;
+  taskData?: TaskData;
   // IRT 3-Parameter Logistic Model parameters
   a: number; // discrimination parameter (0.5-3.0)
   b: number; // difficulty parameter (-3 to +3 logits)
@@ -21,10 +24,143 @@ export interface Question {
 
 export enum QuestionCategory {
   PATTERN_RECOGNITION = 'Pattern Recognition',
-  SPATIAL_REASONING = 'Spatial Reasoning',
+  SPATIAL_REASONING = 'Spatial Reasoning', 
   LOGICAL_DEDUCTION = 'Logical Deduction',
   SHORT_TERM_MEMORY = 'Short-Term Memory',
-  NUMERICAL_REASONING = 'Numerical Reasoning'
+  NUMERICAL_REASONING = 'Numerical Reasoning',
+  // New authentic IQ test categories
+  MATRIX_REASONING = 'Matrix Reasoning',
+  BLOCK_DESIGN = 'Block Design',
+  VISUAL_PUZZLES = 'Visual Puzzles',
+  WORKING_MEMORY = 'Working Memory',
+  PROCESSING_SPEED = 'Processing Speed',
+  VERBAL_COMPREHENSION = 'Verbal Comprehension',
+  PERCEPTUAL_REASONING = 'Perceptual Reasoning',
+  FIGURE_WEIGHTS = 'Figure Weights',
+  SYMBOL_SEARCH = 'Symbol Search',
+  CODING_TASK = 'Coding Task'
+}
+
+export enum TaskType {
+  MULTIPLE_CHOICE = 'multiple_choice',
+  MATRIX_COMPLETION = 'matrix_completion',
+  BLOCK_ASSEMBLY = 'block_assembly',
+  VISUAL_PUZZLE = 'visual_puzzle',
+  DIGIT_SPAN = 'digit_span',
+  SYMBOL_CODING = 'symbol_coding',
+  SPATIAL_ROTATION = 'spatial_rotation',
+  WORKING_MEMORY_NBACK = 'working_memory_nback',
+  PROCESSING_SPEED_SCAN = 'processing_speed_scan',
+  FIGURE_BALANCE = 'figure_balance',
+  SEQUENCE_MEMORY = 'sequence_memory',
+  PATTERN_MATCHING = 'pattern_matching'
+}
+
+export interface TaskData {
+  // Matrix Reasoning
+  matrixPattern?: MatrixPattern;
+  
+  // Block Design
+  blockDesign?: BlockDesignTask;
+  
+  // Visual Puzzles
+  visualPuzzle?: VisualPuzzleTask;
+  
+  // Working Memory
+  digitSequence?: number[];
+  nBackLevel?: number;
+  memoryItems?: MemoryItem[];
+  
+  // Processing Speed
+  symbolPairs?: SymbolPair[];
+  targetSymbols?: string[];
+  searchArray?: SearchItem[];
+  
+  // Spatial Tasks
+  spatialObjects?: SpatialObject[];
+  rotationAngles?: number[];
+  
+  // Figure Weights
+  scaleData?: ScaleData;
+}
+
+export interface MatrixPattern {
+  grid: (string | null)[][];
+  missingIndex: [number, number];
+  options: string[];
+  correctOption: number;
+  pattern: 'sequence' | 'rotation' | 'addition' | 'subtraction' | 'progression';
+}
+
+export interface BlockDesignTask {
+  targetPattern: number[][];
+  blockCount: number;
+  blockTypes: BlockType[];
+  rotationAllowed: boolean;
+  timeLimit: number;
+}
+
+export interface BlockType {
+  id: string;
+  faces: string[]; // 6 faces with colors/patterns
+  rotations: number[]; // allowed rotations
+}
+
+export interface VisualPuzzleTask {
+  completedImage: string; // base64 or SVG
+  pieces: PuzzlePiece[];
+  correctCombination: string[];
+  gridSize: [number, number];
+}
+
+export interface PuzzlePiece {
+  id: string;
+  shape: string; // SVG path or image
+  rotation: number;
+  position?: [number, number];
+}
+
+export interface MemoryItem {
+  id: string;
+  content: string | number;
+  position?: [number, number];
+  color?: string;
+  shape?: string;
+}
+
+export interface SymbolPair {
+  symbol: string;
+  code: string | number;
+}
+
+export interface SearchItem {
+  symbol: string;
+  isTarget: boolean;
+  position: [number, number];
+}
+
+export interface SpatialObject {
+  id: string;
+  shape: '3d_cube' | '3d_pyramid' | '3d_cylinder' | '2d_shape';
+  vertices?: [number, number, number][];
+  faces?: number[][];
+  rotation: [number, number, number]; // x, y, z rotations
+  color?: string;
+}
+
+export interface ScaleData {
+  leftSide: WeightItem[];
+  rightSide: WeightItem[];
+  missingWeight: 'left' | 'right';
+  availableWeights: WeightItem[];
+  correctWeight: string;
+}
+
+export interface WeightItem {
+  id: string;
+  value: number;
+  shape: string;
+  color?: string;
 }
 
 export interface TestSession {
