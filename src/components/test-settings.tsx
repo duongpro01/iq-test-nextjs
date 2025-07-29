@@ -103,23 +103,23 @@ export function TestSettings({ onClose }: TestSettingsProps) {
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.95 }}
-      className="max-w-4xl mx-auto p-6 space-y-6"
+      className="max-w-4xl mx-auto p-4 sm:p-6 space-y-6"
     >
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center space-x-3">
-          <Settings className="w-8 h-8 text-primary" />
+          <Settings className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />
           <div>
-            <h1 className="text-3xl font-bold">Test Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">Test Settings</h1>
             <p className="text-muted-foreground">Configure your IQ test parameters</p>
           </div>
         </div>
-        <div className="flex space-x-2">
-          <Button variant="outline" onClick={handleReset} disabled={!hasChanges}>
+        <div className="flex flex-col sm:flex-row gap-2">
+          <Button variant="outline" onClick={handleReset} disabled={!hasChanges} size="sm">
             <RotateCcw className="w-4 h-4 mr-2" />
             Reset
           </Button>
-          <Button onClick={handleSave} disabled={!hasChanges}>
+          <Button onClick={handleSave} disabled={!hasChanges} size="sm">
             <Save className="w-4 h-4 mr-2" />
             Save Settings
           </Button>
@@ -134,6 +134,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
               router.push('/test');
             }}
             // disabled={hasChanges} // Temporarily removed for testing
+            size="sm"
           >
             <Target className="w-4 h-4 mr-2" />
             Start Test {hasChanges ? '(Disabled)' : '(Enabled)'}
@@ -141,7 +142,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
         {/* Basic Settings */}
         <Card>
           <CardHeader>
@@ -169,7 +170,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   max={50}
                   value={settings.totalQuestions}
                   onChange={(e) => updateSetting('totalQuestions', parseInt(e.target.value) || 30)}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -193,7 +194,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   type="text"
                   value={formatTime(settings.globalTimeLimit)}
                   onChange={(e) => updateSetting('globalTimeLimit', parseTime(e.target.value))}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -219,7 +220,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   max={120}
                   value={settings.questionTimeLimit}
                   onChange={(e) => updateSetting('questionTimeLimit', parseInt(e.target.value) || 60)}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -257,7 +258,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   step={0.1}
                   value={settings.startingAbility}
                   onChange={(e) => updateSetting('startingAbility', parseFloat(e.target.value) || 0)}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -306,7 +307,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   step={0.05}
                   value={settings.targetStandardError}
                   onChange={(e) => updateSetting('targetStandardError', parseFloat(e.target.value) || 0.3)}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -396,7 +397,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
                   step={0.05}
                   value={settings.timeWeightFactor}
                   onChange={(e) => updateSetting('timeWeightFactor', parseFloat(e.target.value) || 0.1)}
-                  className="w-20"
+                  className="w-16 sm:w-20"
                 />
               </div>
               <p className="text-sm text-muted-foreground">
@@ -416,10 +417,8 @@ export function TestSettings({ onClose }: TestSettingsProps) {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button
-              variant={activePreset === "Quick Test" ? "default" : "outline"}
-              className={`w-full justify-start ${
-                activePreset === "Quick Test" ? "bg-primary text-primary-foreground" : ""
-              }`}
+              variant="outline"
+              className="w-full justify-start"
               onClick={() => applyPreset("Quick Test", {
                 totalQuestions: 20,
                 globalTimeLimit: 1200,
@@ -439,10 +438,8 @@ export function TestSettings({ onClose }: TestSettingsProps) {
             </Button>
 
             <Button
-              variant={activePreset === "Standard Test" ? "default" : "outline"}
-              className={`w-full justify-start ${
-                activePreset === "Standard Test" ? "bg-primary text-primary-foreground" : ""
-              }`}
+              variant="outline"
+              className="w-full justify-start"
               onClick={() => applyPreset("Standard Test", {
                 totalQuestions: 35,
                 globalTimeLimit: 2400,
@@ -462,10 +459,8 @@ export function TestSettings({ onClose }: TestSettingsProps) {
             </Button>
 
             <Button
-              variant={activePreset === "Comprehensive Test" ? "default" : "outline"}
-              className={`w-full justify-start ${
-                activePreset === "Comprehensive Test" ? "bg-primary text-primary-foreground" : ""
-              }`}
+              variant="outline"
+              className="w-full justify-start"
               onClick={() => applyPreset("Comprehensive Test", {
                 totalQuestions: 50,
                 globalTimeLimit: 3600,
@@ -485,10 +480,8 @@ export function TestSettings({ onClose }: TestSettingsProps) {
             </Button>
 
             <Button
-              variant={activePreset === "Advanced Level" ? "default" : "outline"}
-              className={`w-full justify-start ${
-                activePreset === "Advanced Level" ? "bg-primary text-primary-foreground" : ""
-              }`}
+              variant="outline"
+              className="w-full justify-start"
               onClick={() => applyPreset("Advanced Level", {
                 totalQuestions: 30,
                 globalTimeLimit: 1800,
@@ -516,7 +509,7 @@ export function TestSettings({ onClose }: TestSettingsProps) {
           <CardTitle>Current Configuration</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-sm">
             <div>
               <div className="font-semibold text-primary">{settings.totalQuestions}</div>
               <div className="text-muted-foreground">Questions</div>

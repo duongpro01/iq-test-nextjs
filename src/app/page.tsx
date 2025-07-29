@@ -69,14 +69,14 @@ export default function HomePage() {
         className="w-full max-w-4xl"
       >
         <Card className="shadow-2xl border-0 bg-card/95 backdrop-blur-sm">
-          <CardHeader className="text-center pb-8 relative">
-            {/* Language Selector - Card Header */}
+          <CardHeader className="text-center pb-8 relative px-4 sm:px-6">
+            {/* Language Selector - Mobile: Top, Desktop: Top Left */}
             <div className="absolute top-4 left-4">
               <LanguageSelector />
             </div>
             
-            {/* Settings Button - Card Header */}
-            <div className="absolute top-4 right-4">
+            {/* Settings Button - Mobile: Hidden, Desktop: Top Right */}
+            <div className="absolute top-4 right-4 hidden sm:block">
               <Button
                 variant="outline"
                 size="sm"
@@ -96,31 +96,31 @@ export default function HomePage() {
             >
               <Brain className="w-8 h-8 text-primary-foreground" />
             </motion.div>
-            <CardTitle className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            <CardTitle className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
               IQ Test System
             </CardTitle>
-            <CardDescription className="text-lg mt-2 max-w-2xl mx-auto">
+            <CardDescription className="text-base sm:text-lg mt-2 max-w-2xl mx-auto">
               Test your intelligence with our advanced adaptive IQ test system
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="space-y-8">
+          <CardContent className="space-y-6 sm:space-y-8 px-4 sm:px-6">
             {/* Features Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
               {features.map((feature, index) => (
                 <motion.div
                   key={feature.title}
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.1, duration: 0.5 }}
-                  className="flex items-start space-x-3 p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
+                  className="flex items-start space-x-3 p-3 sm:p-4 rounded-lg bg-muted/50 hover:bg-muted/70 transition-colors"
                 >
-                  <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                    <feature.icon className="w-5 h-5 text-primary" />
+                  <div className="flex-shrink-0 w-8 h-8 sm:w-10 sm:h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                    <feature.icon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-sm">{feature.title}</h3>
-                    <p className="text-xs text-muted-foreground mt-1">{feature.description}</p>
+                  <div className="min-w-0 flex-1">
+                    <h3 className="font-semibold text-sm sm:text-base">{feature.title}</h3>
+                    <p className="text-xs sm:text-sm text-muted-foreground mt-1">{feature.description}</p>
                   </div>
                 </motion.div>
               ))}
@@ -131,20 +131,20 @@ export default function HomePage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.8, duration: 0.5 }}
-              className="bg-muted/30 rounded-lg p-6 space-y-4"
+              className="bg-muted/30 rounded-lg p-4 sm:p-6 space-y-4"
             >
               <h3 className="text-lg font-semibold">Test Information</h3>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 text-sm">
                 <div className="flex items-center space-x-2">
-                  <Clock className="w-4 h-4 text-primary" />
+                  <Clock className="w-4 h-4 text-primary flex-shrink-0" />
                   <span><strong>Duration:</strong> {Math.floor(config.globalTimeLimit / 60)} minutes</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <Target className="w-4 h-4 text-primary" />
+                  <Target className="w-4 h-4 text-primary flex-shrink-0" />
                   <span><strong>Questions:</strong> {config.totalQuestions} (Adaptive)</span>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <TrendingUp className="w-4 h-4 text-primary" />
+                  <TrendingUp className="w-4 h-4 text-primary flex-shrink-0" />
                   <span><strong>Difficulty:</strong> Auto-adjusting</span>
                 </div>
               </div>
@@ -179,7 +179,7 @@ export default function HomePage() {
                 onClick={handleStartTest}
                 disabled={isLoading}
                 size="lg"
-                className="px-8 py-3 text-lg font-semibold min-w-[200px]"
+                className="w-full sm:w-auto px-8 py-3 text-lg font-semibold min-w-[200px]"
               >
                 {isLoading ? (
                   <div className="flex items-center space-x-2">
@@ -194,6 +194,18 @@ export default function HomePage() {
                 )}
               </Button>
             </motion.div>
+
+            {/* Mobile Settings Button */}
+            <div className="sm:hidden flex justify-center">
+              <Button
+                variant="outline"
+                onClick={() => router.push('/settings')}
+                className="flex items-center space-x-2"
+              >
+                <Settings className="w-4 h-4" />
+                <span>Test Settings</span>
+              </Button>
+            </div>
 
             {/* Disclaimer */}
             <motion.div
