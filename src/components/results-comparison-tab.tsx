@@ -4,47 +4,67 @@ import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { 
-  BarChart3, 
   TrendingUp, 
+  Target, 
   Users,
-  Target
+  BarChart3,
+  PieChart,
+  Activity,
+  Award,
+  Star,
+  Lightbulb,
+  BookOpen
 } from 'lucide-react';
-import { 
-  ResponsiveContainer,
-  PieChart as RechartsPieChart,
-  Pie,
-  Cell,
-  Tooltip
-} from 'recharts';
 import { TestResult } from '@/types';
 
 interface ResultsComparisonTabProps {
   result: TestResult;
+  cognitiveProfile: any;
+  abilityProgression: any;
 }
 
-export function ResultsComparisonTab({ result }: ResultsComparisonTabProps) {
-  // IQ distribution data for comparison
-  const iqDistribution = [
-    { range: '70-79', count: 2.2, color: '#ef4444' },
-    { range: '80-89', count: 13.6, color: '#f97316' },
-    { range: '90-109', count: 68.2, color: '#22c55e' },
-    { range: '110-119', count: 13.6, color: '#3b82f6' },
-    { range: '120-129', count: 2.2, color: '#8b5cf6' },
-    { range: '130+', count: 0.2, color: '#f59e0b' }
+export function ResultsComparisonTab({ 
+  result, 
+  cognitiveProfile,
+  abilityProgression 
+}: ResultsComparisonTabProps) {
+  const domains = [
+    {
+      domain: 'Pattern Recognition',
+      score: cognitiveProfile?.patternRecognition || 0,
+      icon: TrendingUp,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-50 dark:bg-blue-900/20'
+    },
+    {
+      domain: 'Spatial Reasoning',
+      score: cognitiveProfile?.spatialReasoning || 0,
+      icon: Target,
+      color: 'text-green-500',
+      bgColor: 'bg-green-50 dark:bg-green-900/20'
+    },
+    {
+      domain: 'Logical Deduction',
+      score: cognitiveProfile?.logicalDeduction || 0,
+      icon: Lightbulb,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-50 dark:bg-purple-900/20'
+    },
+    {
+      domain: 'Numerical Reasoning',
+      score: cognitiveProfile?.numericalReasoning || 0,
+      icon: BarChart3,
+      color: 'text-orange-500',
+      bgColor: 'bg-orange-50 dark:bg-orange-900/20'
+    },
+    {
+      domain: 'Short-term Memory',
+      score: cognitiveProfile?.shortTermMemory || 0,
+      icon: Activity,
+      color: 'text-red-500',
+      bgColor: 'bg-red-50 dark:bg-red-900/20'
+    }
   ];
-
-  const getIQClassification = (iq: number) => {
-    if (iq >= 160) return { label: 'Exceptional Genius', color: 'text-purple-600', bg: 'bg-purple-100' };
-    if (iq >= 145) return { label: 'Genius', color: 'text-indigo-600', bg: 'bg-indigo-100' };
-    if (iq >= 130) return { label: 'Highly Gifted', color: 'text-blue-600', bg: 'bg-blue-100' };
-    if (iq >= 120) return { label: 'Superior', color: 'text-green-600', bg: 'bg-green-100' };
-    if (iq >= 110) return { label: 'High Average', color: 'text-emerald-600', bg: 'bg-emerald-100' };
-    if (iq >= 90) return { label: 'Average', color: 'text-gray-600', bg: 'bg-gray-100' };
-    if (iq >= 80) return { label: 'Low Average', color: 'text-yellow-600', bg: 'bg-yellow-100' };
-    return { label: 'Below Average', color: 'text-red-600', bg: 'bg-red-100' };
-  };
-
-  const classification = getIQClassification(result.estimatedIQ);
 
   return (
     <motion.div
@@ -58,136 +78,158 @@ export function ResultsComparisonTab({ result }: ResultsComparisonTabProps) {
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <Users className="w-5 h-5" />
-            <span>Population Distribution</span>
+            <span>Population Comparison</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <RechartsPieChart>
-              <Pie
-                data={iqDistribution}
-                cx="50%"
-                cy="50%"
-                outerRadius={100}
-                dataKey="count"
-                label={({ range, count }) => `${range}: ${count}%`}
-              >
-                {iqDistribution.map((entry, index) => (
-                  <Cell key={`comparison-cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </RechartsPieChart>
-          </ResponsiveContainer>
-          <div className="text-center mt-4">
-            <Badge variant="default" className="text-lg px-4 py-2">
-              You scored higher than {Math.round(result.percentileRank)}% of the population
-            </Badge>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Your Position */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Target className="w-5 h-5" />
-            <span>Your Position</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">
                 {result.estimatedIQ}
               </div>
               <div className="text-sm text-muted-foreground">Your IQ Score</div>
-              <div className={`inline-flex items-center px-3 py-1 rounded-full ${classification.bg} ${classification.color} text-sm font-semibold mt-2`}>
-                {classification.label}
-              </div>
             </div>
-            
-            <div className="text-center">
-              <div className="text-4xl font-bold text-green-600 mb-2">
-                {Math.round(result.percentileRank)}th
+            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">
+                {result.accuracy?.toFixed(1) || 'N/A'}%
               </div>
-              <div className="text-sm text-muted-foreground">Percentile Rank</div>
-              <div className="text-xs text-muted-foreground mt-2">
-                Top {100 - Math.round(result.percentileRank)}% of population
+              <div className="text-sm text-muted-foreground">Accuracy</div>
+            </div>
+            <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">
+                {result.standardError?.toFixed(3) || 'N/A'}
               </div>
+              <div className="text-sm text-muted-foreground">Standard Error</div>
+            </div>
+            <div className="text-center p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-orange-600">
+                {Math.round(result.completionTime / 60)}m
+              </div>
+              <div className="text-sm text-muted-foreground">Duration</div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Statistical Comparison */}
+      {/* Domain Comparison */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
-            <BarChart3 className="w-5 h-5" />
-            <span>Statistical Comparison</span>
+            <PieChart className="w-5 h-5" />
+            <span>Domain Performance Comparison</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">100</div>
-                <div className="text-sm text-muted-foreground">Population Average</div>
-              </div>
-              <div className="text-center p-4 bg-primary/10 rounded-lg">
-                <div className="text-2xl font-bold text-primary">{result.estimatedIQ}</div>
-                <div className="text-sm text-muted-foreground">Your Score</div>
-              </div>
-              <div className="text-center p-4 bg-muted rounded-lg">
-                <div className="text-2xl font-bold text-green-600">15</div>
-                <div className="text-sm text-muted-foreground">Standard Deviation</div>
-              </div>
-            </div>
-            
-            <div className="text-center">
-              <div className="text-lg font-semibold mb-2">Confidence Interval</div>
-              <div className="text-2xl font-bold text-purple-600">
-                {Math.round(result.confidenceInterval[0])} - {Math.round(result.confidenceInterval[1])}
-              </div>
-              <div className="text-sm text-muted-foreground">95% confidence range</div>
-            </div>
+            {domains.map((domain, index) => (
+              <motion.div
+                key={domain.domain}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-center justify-between p-3 rounded-lg bg-muted/50"
+              >
+                <div className="flex items-center space-x-3">
+                  <domain.icon className={`w-4 h-4 ${domain.color}`} />
+                  <span className="font-medium">{domain.domain}</span>
+                </div>
+                <div className="text-lg font-bold">{domain.score?.toFixed(1) || 'N/A'}%</div>
+              </motion.div>
+            ))}
           </div>
         </CardContent>
       </Card>
 
-      {/* Performance vs Population */}
+      {/* Performance Analysis */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Your Performance */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Award className="w-5 h-5" />
+              <span>Your Performance</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Total Questions:</span>
+                <span className="font-semibold">{result.totalQuestions}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Correct Answers:</span>
+                <span className="font-semibold">{result.correctAnswers}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Completion Time:</span>
+                <span className="font-semibold">{Math.round(result.completionTime / 60)}m {Math.round(result.completionTime % 60)}s</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Questions per Minute:</span>
+                <span className="font-semibold">{(result.totalQuestions / (result.completionTime / 60)).toFixed(1)}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Quality Metrics */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <Target className="w-5 h-5" />
+              <span>Quality Metrics</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Cronbach's Alpha:</span>
+                <span className="font-semibold">{result.cronbachAlpha?.toFixed(3) || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Test Reliability:</span>
+                <span className="font-semibold">{result.testReliability?.toFixed(3) || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Measurement Precision:</span>
+                <span className="font-semibold">{result.measurementPrecision?.toFixed(2) || 'N/A'}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-muted-foreground">Final θ (Theta):</span>
+                <span className="font-semibold">{result.finalAbilityEstimate?.toFixed(3) || 'N/A'}</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* IRT Analysis */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center space-x-2">
             <TrendingUp className="w-5 h-5" />
-            <span>Performance vs Population</span>
+            <span>IRT Analysis</span>
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="space-y-4">
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="font-semibold">Accuracy</span>
-              <div className="flex items-center space-x-2">
-                <div className="text-lg font-bold">{result.accuracy.toFixed(1)}%</div>
-                <Badge variant="secondary">Above Average</Badge>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">
+                {result.finalAbilityEstimate?.toFixed(3) || 'N/A'}
               </div>
+              <div className="text-sm text-muted-foreground">Final θ (Theta)</div>
             </div>
-            
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="font-semibold">Speed</span>
-              <div className="flex items-center space-x-2">
-                <div className="text-lg font-bold">{Math.round(result.completionTime / 60)}m</div>
-                <Badge variant="secondary">Efficient</Badge>
+            <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-green-600">
+                {result.standardError?.toFixed(3) || 'N/A'}
               </div>
+              <div className="text-sm text-muted-foreground">Standard Error</div>
             </div>
-            
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-              <span className="font-semibold">Consistency</span>
-              <div className="flex items-center space-x-2">
-                <div className="text-lg font-bold">{result.standardError?.toFixed(3) || 'N/A'}</div>
-                <Badge variant="secondary">Reliable</Badge>
+            <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+              <div className="text-2xl font-bold text-purple-600">
+                {(1 / (result.standardError || 1))?.toFixed(2) || 'N/A'}
               </div>
+              <div className="text-sm text-muted-foreground">Precision</div>
             </div>
           </div>
         </CardContent>

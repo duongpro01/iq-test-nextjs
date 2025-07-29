@@ -1,210 +1,207 @@
 "use client"
 
-import { useMemo } from 'react';
-import { 
-  LineChart, 
-  Line, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  Legend, 
-  ResponsiveContainer 
-} from 'recharts';
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { TestResult } from '@/types';
+import { Badge } from '@/components/ui/badge';
+import { TrendingUp, Brain, Target, Zap } from 'lucide-react';
+
+interface ProgressionPoint {
+  questionIndex: number;
+  abilityEstimate: number;
+  responseTime: number;
+  accuracy: number;
+  difficulty: number;
+}
 
 interface AdaptiveProgressionChartProps {
-  result: TestResult;
+  progressionData: ProgressionPoint[];
+  currentAbility: number;
+  targetAbility: number;
+  className?: string;
 }
 
-interface ProgressionDataPoint {
-  questionNumber: number;
-  abilityEstimate: number;
-  questionDifficulty: number;
-  informationGained: number;
-}
+export function AdaptiveProgressionChart({ 
+  progressionData, 
+  currentAbility, 
+  targetAbility,
+  className = "" 
+}: AdaptiveProgressionChartProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
-export function AdaptiveProgressionChart({ result }: AdaptiveProgressionChartProps) {
-  const progressionData = useMemo(() => {
-    const data: ProgressionDataPoint[] = [];
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas || progressionData.length === 0) return;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Set canvas size
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = rect.height * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+    // Chart dimensions
+    const padding = 40;
+    const width = rect.width - padding * 2;
+    const height = rect.height - padding * 2;
+
+    // Find data bounds
+    const abilities = progressionData.map(p => p.abilityEstimate);
+    const minAbility = Math.min(...abilities, targetAbility);
+    const maxAbility = Math.max(...abilities, targetAbility);
+    const abilityRange = maxAbility - minAbility;
+
+    // Draw grid
+    ctx.strokeStyle = '#e5e7eb';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 5; i++) {
+      const y = padding + (height / 5) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding, y);
+      ctx.lineTo(padding + width, y);
+      ctx.stroke();
+    }
+
+    // Draw ability progression line
+    ctx.strokeStyle = '#3b82f6';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    progressionData.forEach((point, index) => {
+      const x = padding + (width / (progressionData.length - 1)) * index;
+      const y = padding + height - ((point.abilityEstimate - minAbility) / abilityRange) * height;
+      
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+    ctx.stroke();
+
+    // Draw target line
+    ctx.strokeStyle = '#10b981';
+    ctx.lineWidth = 2;
+    ctx.setLineDash([5, 5]);
+    const targetY = padding + height - ((targetAbility - minAbility) / abilityRange) * height;
+    ctx.beginPath();
+    ctx.moveTo(padding, targetY);
+    ctx.lineTo(padding + width, targetY);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Draw current ability indicator
+    ctx.fillStyle = '#ef4444';
+    ctx.beginPath();
+    const currentX = padding + width;
+    const currentY = padding + height - ((currentAbility - minAbility) / abilityRange) * height;
+    ctx.arc(currentX, currentY, 6, 0, 2 * Math.PI);
+    ctx.fill();
+
+    // Draw labels
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '12px sans-serif';
+    ctx.textAlign = 'center';
     
-    // Use the progression arrays from TestResult
-    const maxLength = Math.max(
-      result.abilityProgression?.length || 0,
-      result.difficultyProgression?.length || 0,
-      result.informationCurve?.length || 0
-    );
-
-    for (let i = 0; i < maxLength; i++) {
-      data.push({
-        questionNumber: i + 1,
-        abilityEstimate: result.abilityProgression?.[i] || 0,
-        questionDifficulty: result.difficultyProgression?.[i] || 0,
-        informationGained: result.informationCurve?.[i] || 0
-      });
+    // Y-axis labels
+    for (let i = 0; i <= 5; i++) {
+      const y = padding + (height / 5) * i;
+      const ability = maxAbility - (abilityRange / 5) * i;
+      ctx.fillText(ability.toFixed(1), padding - 10, y + 4);
     }
 
-    return data;
-  }, [result]);
+    // X-axis labels
+    ctx.textAlign = 'center';
+    progressionData.forEach((_, index) => {
+      const x = padding + (width / (progressionData.length - 1)) * index;
+      ctx.fillText(`${index + 1}`, x, padding + height + 20);
+    });
 
-  // Custom tooltip
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white p-3 border border-gray-200 rounded-lg shadow-lg">
-          <p className="font-semibold text-gray-800">{label}</p>
-          {payload.map((entry: any, index: number) => (
-            <p key={index} style={{ color: entry.color }} className="text-sm">
-              {entry.name}: {entry.value.toFixed(2)}
-            </p>
-          ))}
-        </div>
-      );
-    }
-    return null;
-  };
+  }, [progressionData, currentAbility, targetAbility]);
 
-  // Custom legend
-  const CustomLegend = ({ payload }: any) => {
-    return (
-      <div className="flex justify-center space-x-6 mt-4">
-        {payload?.map((entry: any, index: number) => (
-          <div key={index} className="flex items-center space-x-2">
-            <div 
-              className="w-3 h-3 rounded-full" 
-              style={{ backgroundColor: entry.color }}
-            />
-            <span className="text-sm text-gray-600">{entry.value}</span>
-          </div>
-        ))}
-      </div>
-    );
-  };
-
-  if (!progressionData.length) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Adaptive Test Progression</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-8 text-gray-500">
-            Progression data not available for this test session.
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
+  const progressPercentage = ((currentAbility + 3) / 6) * 100; // Assuming range from -3 to +3
 
   return (
-    <Card>
+    <Card className={className}>
       <CardHeader>
-        <CardTitle>Adaptive Test Progression</CardTitle>
-        <p className="text-sm text-muted-foreground">
-          How your ability estimate and question difficulty evolved during the test
-        </p>
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-lg">Adaptive Progression</CardTitle>
+          <Badge variant="secondary" className="flex items-center space-x-1">
+            <TrendingUp className="w-3 h-3" />
+            <span>Live</span>
+          </Badge>
+        </div>
       </CardHeader>
-      <CardContent>
-        <ResponsiveContainer width="100%" height={400}>
-          <LineChart
-            data={progressionData}
-            margin={{
-              top: 20,
-              right: 30,
-              left: 20,
-              bottom: 20,
-            }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis 
-              dataKey="questionNumber" 
-              label={{ value: 'Question Number', position: 'insideBottom', offset: -10 }}
-              tick={{ fontSize: 12 }}
-            />
-            <YAxis 
-              label={{ value: 'Score/Difficulty', angle: -90, position: 'insideLeft' }}
-              tick={{ fontSize: 12 }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend content={<CustomLegend />} />
-            
-            {/* Ability Estimate Line */}
-            <Line
-              type="monotone"
-              dataKey="abilityEstimate"
-              stroke="#3b82f6"
-              strokeWidth={3}
-              dot={{ fill: '#3b82f6', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#3b82f6', strokeWidth: 2 }}
-              name="Ability Estimate"
-            />
-            
-            {/* Question Difficulty Line */}
-            <Line
-              type="monotone"
-              dataKey="questionDifficulty"
-              stroke="#f97316"
-              strokeWidth={3}
-              dot={{ fill: '#f97316', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#f97316', strokeWidth: 2 }}
-              name="Question Difficulty"
-            />
-            
-            {/* Information Gained Line */}
-            <Line
-              type="monotone"
-              dataKey="informationGained"
-              stroke="#10b981"
-              strokeWidth={3}
-              dot={{ fill: '#10b981', strokeWidth: 2, r: 4 }}
-              activeDot={{ r: 6, stroke: '#10b981', strokeWidth: 2 }}
-              name="Information Gained"
-            />
-          </LineChart>
-        </ResponsiveContainer>
+      <CardContent className="space-y-4">
+        {/* Chart Canvas */}
+        <div className="relative h-64 bg-muted/20 rounded-lg overflow-hidden">
+          <canvas
+            ref={canvasRef}
+            className="w-full h-full"
+            style={{ display: 'block' }}
+          />
+        </div>
 
-        {/* Chart Insights */}
-        <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
+        {/* Stats Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-1 mb-1">
+              <Brain className="w-4 h-4 text-blue-500" />
+              <span className="text-sm font-medium">Current Ability</span>
+            </div>
             <div className="text-2xl font-bold text-blue-600">
-              {progressionData.length > 0 ? progressionData[progressionData.length - 1].abilityEstimate.toFixed(1) : 'N/A'}
+              {currentAbility.toFixed(1)}
             </div>
-            <div className="text-sm text-blue-600">Final Ability Estimate</div>
           </div>
-          
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">
-              {progressionData.length > 0 ? progressionData[progressionData.length - 1].questionDifficulty.toFixed(1) : 'N/A'}
+
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-1 mb-1">
+              <Target className="w-4 h-4 text-green-500" />
+              <span className="text-sm font-medium">Target</span>
             </div>
-            <div className="text-sm text-orange-600">Final Question Difficulty</div>
-          </div>
-          
-          <div className="text-center p-4 bg-green-50 rounded-lg">
             <div className="text-2xl font-bold text-green-600">
-              {progressionData.length > 0 ? progressionData[progressionData.length - 1].informationGained.toFixed(2) : 'N/A'}
+              {targetAbility.toFixed(1)}
             </div>
-            <div className="text-sm text-green-600">Final Information Gained</div>
+          </div>
+
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-1 mb-1">
+              <Zap className="w-4 h-4 text-yellow-500" />
+              <span className="text-sm font-medium">Progress</span>
+            </div>
+            <div className="text-2xl font-bold text-yellow-600">
+              {progressPercentage.toFixed(0)}%
+            </div>
+          </div>
+
+          <div className="text-center">
+            <div className="flex items-center justify-center space-x-1 mb-1">
+              <TrendingUp className="w-4 h-4 text-purple-500" />
+              <span className="text-sm font-medium">Questions</span>
+            </div>
+            <div className="text-2xl font-bold text-purple-600">
+              {progressionData.length}
+            </div>
           </div>
         </div>
 
-        {/* Progression Analysis */}
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="font-semibold text-gray-800 mb-2">Progression Analysis</h4>
-          <div className="text-sm text-gray-600 space-y-1">
-            <p>
-              • <strong>Ability Estimate:</strong> Started at {progressionData[0]?.abilityEstimate.toFixed(1) || 'N/A'} 
-              and ended at {progressionData[progressionData.length - 1]?.abilityEstimate.toFixed(1) || 'N/A'}
-            </p>
-            <p>
-              • <strong>Question Difficulty:</strong> Ranged from {Math.min(...progressionData.map(d => d.questionDifficulty)).toFixed(1)} 
-              to {Math.max(...progressionData.map(d => d.questionDifficulty)).toFixed(1)}
-            </p>
-            <p>
-              • <strong>Information Gained:</strong> Total information accumulated: {
-                progressionData.reduce((sum, d) => sum + d.informationGained, 0).toFixed(2)
-              }
-            </p>
+        {/* Progress Bar */}
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span>Progress to Target</span>
+            <span>{progressPercentage.toFixed(1)}%</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-2">
+            <motion.div
+              className="bg-gradient-to-r from-blue-500 to-green-500 h-2 rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${Math.min(progressPercentage, 100)}%` }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            />
           </div>
         </div>
       </CardContent>

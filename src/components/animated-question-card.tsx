@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useCallback, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Image from 'next/image';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,8 +21,6 @@ import { useTestStore } from '@/store/test-store';
 import { useGamificationStore } from '@/store/gamification-store';
 import { Question, QuestionTransition } from '@/types';
 import { formatTime } from '@/lib/utils';
-import { useTranslation } from 'react-i18next';
-import { getLocalizedQuestion } from '@/lib/localized-questions';
 
 interface AnimatedQuestionCardProps {
   question: Question;
@@ -37,11 +35,8 @@ export function AnimatedQuestionCard({
   totalQuestions,
   transition = { type: 'slide', duration: 0.5, easing: 'easeInOut', direction: 'right' }
 }: AnimatedQuestionCardProps) {
-  // Return early if no question
-  if (!question) return null;
-
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [timeRemaining, setTimeRemaining] = useState(question.timeLimit);
+  const [timeRemaining, setTimeRemaining] = useState(question?.timeLimit || 60);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [streakBonus, setStreakBonus] = useState(0);
@@ -66,7 +61,7 @@ export function AnimatedQuestionCard({
     setSelectedAnswer(null);
     setIsSubmitting(false);
     setShowHint(false);
-  }, [question?.id, question?.timeLimit]);
+  }, [question?.id, question?.timeLimit, question]);
 
   const handleSubmit = useCallback(async (answerIndex: number) => {
     if (isSubmitting || !question) return;
@@ -144,6 +139,9 @@ export function AnimatedQuestionCard({
       setStreakBonus(bonus);
     }
   }, [userProfile]);
+
+  // Return early if no question
+  if (!question) return null;
 
   const progressPercentage = ((questionNumber - 1) / totalQuestions) * 100;
   const timeProgressPercentage = (timeRemaining / question.timeLimit) * 100;

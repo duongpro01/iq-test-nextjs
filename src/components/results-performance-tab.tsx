@@ -32,6 +32,15 @@ export function ResultsPerformanceTab({
   responseTimeData,
   securityReport 
 }: ResultsPerformanceTabProps) {
+  // Create progression data from result
+  const progressionData = result.abilityProgression?.map((ability, index) => ({
+    questionIndex: index + 1,
+    abilityEstimate: ability,
+    responseTime: result.responseTimeProgression?.[index] || 0,
+    accuracy: result.accuracyProgression?.[index] || 0,
+    difficulty: result.difficultyProgression?.[index] || 0
+  })) || [];
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 20 }}
@@ -79,7 +88,7 @@ export function ResultsPerformanceTab({
         <Card>
           <CardContent className="p-4 text-center">
             <Target className="w-8 h-8 mx-auto mb-2 text-green-500" />
-            <div className="text-2xl font-bold">{result.accuracy.toFixed(1)}%</div>
+            <div className="text-2xl font-bold">{result.accuracy?.toFixed(1) || 'N/A'}%</div>
             <div className="text-sm text-muted-foreground">Accuracy</div>
           </CardContent>
         </Card>
@@ -93,7 +102,7 @@ export function ResultsPerformanceTab({
         <Card>
           <CardContent className="p-4 text-center">
             <Shield className="w-8 h-8 mx-auto mb-2 text-purple-500" />
-            <div className="text-2xl font-bold">{(securityReport.confidenceScore * 100).toFixed(0)}%</div>
+            <div className="text-2xl font-bold">{(securityReport?.confidenceScore * 100)?.toFixed(0) || 'N/A'}%</div>
             <div className="text-sm text-muted-foreground">Confidence</div>
           </CardContent>
         </Card>
@@ -157,7 +166,13 @@ export function ResultsPerformanceTab({
       </Card>
 
       {/* Adaptive Test Progression Chart */}
-      <AdaptiveProgressionChart result={result} />
+      {progressionData.length > 0 && (
+        <AdaptiveProgressionChart 
+          progressionData={progressionData}
+          currentAbility={result.finalAbilityEstimate || 0}
+          targetAbility={result.finalAbilityEstimate || 0}
+        />
+      )}
     </motion.div>
   );
 } 

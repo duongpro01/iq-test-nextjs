@@ -1,27 +1,24 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { 
   Download, 
   Share2, 
-  FileText,
-  Twitter,
-  Facebook,
-  Linkedin,
+  FileText, 
+  Image as ImageIcon,
   Copy,
-  CheckCircle
+  Check,
+  ExternalLink
 } from 'lucide-react';
 import { TestResult } from '@/types';
-import { useGamificationStore } from '@/store/gamification-store';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import { useToast } from '@/components/ui/use-toast';
 
 interface ResultsExportTabProps {
   result: TestResult;
-  cognitiveProfile: any[];
+  cognitiveProfile: any;
   securityReport: any;
 }
 
@@ -30,295 +27,162 @@ export function ResultsExportTab({
   cognitiveProfile,
   securityReport 
 }: ResultsExportTabProps) {
-  const [isExporting, setIsExporting] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copied, setCopied] = useState(false);
-  
-  const { trackEngagement } = useGamificationStore();
-
-  const exportResults = async (format: 'pdf' | 'html' | 'json') => {
-    setIsExporting(true);
-    
-    try {
-      const exportData = {
-        result,
-        cognitiveProfile,
-        securityReport,
-        timestamp: new Date().toISOString()
-      };
-
-      switch (format) {
-        case 'json':
-          const jsonBlob = new Blob([JSON.stringify(exportData, null, 2)], { 
-            type: 'application/json' 
-          });
-          const jsonUrl = URL.createObjectURL(jsonBlob);
-          const jsonLink = document.createElement('a');
-          jsonLink.href = jsonUrl;
-          jsonLink.download = `iq-test-results-${Date.now()}.json`;
-          jsonLink.click();
-          URL.revokeObjectURL(jsonUrl);
-          break;
-          
-        case 'html':
-          const htmlContent = generateHTMLReport(exportData);
-          const htmlBlob = new Blob([htmlContent], { type: 'text/html' });
-          const htmlUrl = URL.createObjectURL(htmlBlob);
-          const htmlLink = document.createElement('a');
-          htmlLink.href = htmlUrl;
-          htmlLink.download = `iq-test-results-${Date.now()}.html`;
-          htmlLink.click();
-          URL.revokeObjectURL(htmlUrl);
-          break;
-          
-        case 'pdf':
-          await exportToPDF();
-          break;
-      }
-      
-      trackEngagement('results_exported', { format });
-    } catch (error) {
-      console.error('Export failed:', error);
-      alert('Export failed. Please try again.');
-    } finally {
-      setIsExporting(false);
-    }
-  };
-
-  const exportToPDF = async () => {
-    try {
-      // Create a temporary div for PDF content
-      const pdfContent = document.createElement('div');
-      pdfContent.style.position = 'absolute';
-      pdfContent.style.left = '-9999px';
-      pdfContent.style.top = '0';
-      pdfContent.style.width = '800px';
-      pdfContent.style.padding = '40px';
-      pdfContent.style.backgroundColor = 'white';
-      pdfContent.style.fontFamily = 'Arial, sans-serif';
-      pdfContent.style.fontSize = '12px';
-      pdfContent.style.lineHeight = '1.4';
-      
-      // Generate PDF content
-      pdfContent.innerHTML = generatePDFContent();
-      document.body.appendChild(pdfContent);
-
-      // Convert to canvas
-      const canvas = await html2canvas(pdfContent, {
-        width: 800,
-        height: pdfContent.scrollHeight,
-        scale: 2,
-        useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff'
-      });
-
-      // Remove temporary element
-      document.body.removeChild(pdfContent);
-
-      // Create PDF
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
-      const imgWidth = pdfWidth - 20; // 10mm margin on each side
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-      
-      let heightLeft = imgHeight;
-      let position = 10; // 10mm top margin
-
-      // Add first page
-      pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-      heightLeft -= (pdfHeight - 20);
-
-      // Add additional pages if needed
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight + 10;
-        pdf.addPage();
-        pdf.addImage(imgData, 'PNG', 10, position, imgWidth, imgHeight);
-        heightLeft -= (pdfHeight - 20);
-      }
-
-      // Save PDF
-      pdf.save(`IQ-Test-Results-${Date.now()}.pdf`);
-    } catch (error) {
-      console.error('PDF export failed:', error);
-      alert('PDF export failed. Please try again.');
-    }
-  };
-
-  const generatePDFContent = (): string => {
-    const getIQClassification = (iq: number) => {
-      if (iq >= 160) return 'Exceptional Genius';
-      if (iq >= 145) return 'Genius';
-      if (iq >= 130) return 'Highly Gifted';
-      if (iq >= 120) return 'Superior';
-      if (iq >= 110) return 'High Average';
-      if (iq >= 90) return 'Average';
-      if (iq >= 80) return 'Low Average';
-      return 'Below Average';
-    };
-
-    const classification = getIQClassification(result.estimatedIQ);
-    const date = new Date().toLocaleDateString();
-    const time = new Date().toLocaleTimeString();
-
-    return `
-      <div style="max-width: 800px; margin: 0 auto;">
-        <!-- Header -->
-        <div style="text-align: center; margin-bottom: 30px; border-bottom: 2px solid #3b82f6; padding-bottom: 20px;">
-          <h1 style="color: #3b82f6; font-size: 32px; margin: 0 0 10px 0;">IQ Test Results Report</h1>
-          <p style="color: #666; margin: 0;">Generated on ${date} at ${time}</p>
-        </div>
-
-        <!-- Main Score -->
-        <div style="text-align: center; margin-bottom: 40px; padding: 30px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 10px;">
-          <div style="font-size: 72px; font-weight: bold; color: #3b82f6; margin-bottom: 10px;">${result.estimatedIQ}</div>
-          <div style="font-size: 24px; color: #1e40af; margin-bottom: 20px;">${classification}</div>
-          <div style="display: flex; justify-content: center; gap: 40px; margin-top: 20px;">
-            <div style="text-align: center;">
-              <div style="font-size: 20px; font-weight: bold; color: #059669;">${result.accuracy.toFixed(1)}%</div>
-              <div style="font-size: 14px; color: #666;">Accuracy</div>
-            </div>
-            <div style="text-align: center;">
-              <div style="font-size: 20px; font-weight: bold; color: #3b82f6;">${Math.round(result.percentileRank)}th</div>
-              <div style="font-size: 14px; color: #666;">Percentile</div>
-            </div>
-            <div style="text-align: center;">
-              <div style="font-size: 20px; font-weight: bold; color: #7c3aed;">${Math.round(result.completionTime / 60)}m</div>
-              <div style="font-size: 14px; color: #666;">Duration</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Test Statistics -->
-        <div style="margin-bottom: 30px;">
-          <h2 style="color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">Test Statistics</h2>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px;">
-            <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">
-              <div style="font-weight: bold; color: #374151;">Questions Answered</div>
-              <div style="font-size: 18px; color: #3b82f6;">${result.totalQuestions}</div>
-            </div>
-            <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">
-              <div style="font-weight: bold; color: #374151;">Correct Answers</div>
-              <div style="font-size: 18px; color: #059669;">${result.correctAnswers}</div>
-            </div>
-            <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">
-              <div style="font-weight: bold; color: #374151;">Average Response Time</div>
-              <div style="font-size: 18px; color: #7c3aed;">${(result.averageResponseTime / 1000).toFixed(1)}s</div>
-            </div>
-            <div style="background: #f9fafb; padding: 15px; border-radius: 8px;">
-              <div style="font-weight: bold; color: #374151;">Confidence Interval</div>
-              <div style="font-size: 18px; color: #dc2626;">${Math.round(result.confidenceInterval[0])} - ${Math.round(result.confidenceInterval[1])}</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Cognitive Profile -->
-        <div style="margin-bottom: 30px;">
-          <h2 style="color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">Cognitive Profile</h2>
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
-            ${cognitiveProfile.map((domain: any) => `
-              <div style="background: #f9fafb; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6;">
-                <div style="font-weight: bold; color: #374151; margin-bottom: 5px;">${domain.domain}</div>
-                <div style="font-size: 24px; font-weight: bold; color: #3b82f6; margin-bottom: 5px;">${domain.score.toFixed(1)}%</div>
-                <div style="font-size: 12px; color: #666;">${Math.round(domain.percentile)}th percentile</div>
-                <div style="background: #e5e7eb; height: 6px; border-radius: 3px; margin-top: 8px;">
-                  <div style="background: #3b82f6; height: 100%; width: ${domain.score}%; border-radius: 3px;"></div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-
-        <!-- Reliability Metrics -->
-        <div style="margin-bottom: 30px;">
-          <h2 style="color: #374151; border-bottom: 1px solid #e5e7eb; padding-bottom: 10px;">Reliability Metrics</h2>
-          <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 20px;">
-            <div style="background: #f0fdf4; padding: 15px; border-radius: 8px; text-align: center;">
-              <div style="font-size: 24px; font-weight: bold; color: #059669;">${result.cronbachAlpha?.toFixed(3) || 'N/A'}</div>
-              <div style="font-size: 12px; color: #666;">Cronbach's Alpha</div>
-            </div>
-            <div style="background: #eff6ff; padding: 15px; border-radius: 8px; text-align: center;">
-              <div style="font-size: 24px; font-weight: bold; color: #3b82f6;">${result.standardError?.toFixed(3) || 'N/A'}</div>
-              <div style="font-size: 12px; color: #666;">Standard Error</div>
-            </div>
-            <div style="background: #faf5ff; padding: 15px; border-radius: 8px; text-align: center;">
-              <div style="font-size: 24px; font-weight: bold; color: #7c3aed;">${result.testReliability?.toFixed(3) || 'N/A'}</div>
-              <div style="font-size: 12px; color: #666;">Test Reliability</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Footer -->
-        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e5e7eb; text-align: center; color: #666; font-size: 12px;">
-          <p>This report was generated by the Adaptive IQ Testing System</p>
-          <p>For educational and research purposes only. Not a substitute for professional assessment.</p>
-        </div>
-      </div>
-    `;
-  };
-
-  const generateHTMLReport = (data: { result: TestResult; cognitiveProfile: any; securityReport: any }): string => {
-    return `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>IQ Test Results</title>
-          <style>
-            body { font-family: Arial, sans-serif; margin: 40px; }
-            .header { text-align: center; margin-bottom: 30px; }
-            .score { font-size: 48px; font-weight: bold; color: #3b82f6; }
-            .section { margin: 20px 0; padding: 20px; border: 1px solid #e5e7eb; border-radius: 8px; }
-            .metric { display: inline-block; margin: 10px; padding: 10px; background: #f3f4f6; border-radius: 4px; }
-          </style>
-        </head>
-        <body>
-          <div class="header">
-            <h1>IQ Test Results</h1>
-            <div class="score">${data.result.estimatedIQ}</div>
-            <p>Accuracy: ${data.result.accuracy.toFixed(1)}% | Time: ${Math.round(data.result.completionTime / 60)}m</p>
-          </div>
-          <div class="section">
-            <h2>Cognitive Profile</h2>
-            ${data.cognitiveProfile.map((domain: any) => `
-              <div class="metric">
-                <strong>${domain.domain}:</strong> ${domain.score.toFixed(1)}%
-              </div>
-            `).join('')}
-          </div>
-        </body>
-      </html>
-    `;
-  };
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const { toast } = useToast();
 
   const generateShareUrl = () => {
     const baseUrl = window.location.origin;
-    return `${baseUrl}/ket-qua?score=${result.estimatedIQ}&accuracy=${result.accuracy.toFixed(1)}`;
+    return `${baseUrl}/ket-qua?score=${result.estimatedIQ}&accuracy=${result.accuracy?.toFixed(1) || 'N/A'}`;
   };
 
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
+      toast({
+        title: "Copied!",
+        description: "Results link copied to clipboard",
+        duration: 2000,
+      });
       setTimeout(() => setCopied(false), 2000);
-    } catch (error) {
-      console.error('Failed to copy:', error);
+    } catch (err) {
+      toast({
+        title: "Error",
+        description: "Failed to copy to clipboard",
+        variant: "destructive",
+      });
     }
   };
 
-  const shareToSocial = (platform: string) => {
+  const generateImage = async () => {
+    if (!canvasRef.current) return;
+
+    setIsGenerating(true);
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas size
+    canvas.width = 1200;
+    canvas.height = 800;
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Header
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 48px Arial';
+    ctx.fillText('IQ Test Results', 50, 80);
+
+    // Score
+    ctx.fillStyle = '#059669';
+    ctx.font = 'bold 72px Arial';
+    ctx.fillText(`${result.estimatedIQ}`, 50, 180);
+
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '24px Arial';
+    ctx.fillText('Estimated IQ Score', 50, 220);
+
+    // Accuracy
+    ctx.fillStyle = '#3b82f6';
+    ctx.font = 'bold 36px Arial';
+    ctx.fillText(`${result.accuracy?.toFixed(1) || 'N/A'}%`, 50, 280);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '20px Arial';
+    ctx.fillText('Accuracy', 50, 310);
+
+    // Response Time
+    ctx.fillStyle = '#7c3aed';
+    ctx.font = 'bold 36px Arial';
+    ctx.fillText(`${(result.averageResponseTime / 1000)?.toFixed(1) || 'N/A'}s`, 50, 380);
+    ctx.fillStyle = '#6b7280';
+    ctx.font = '20px Arial';
+    ctx.fillText('Avg Response Time', 50, 410);
+
+    // Domain Scores
+    const domains = [
+      { name: 'Pattern Recognition', score: cognitiveProfile?.patternRecognition || 0 },
+      { name: 'Spatial Reasoning', score: cognitiveProfile?.spatialReasoning || 0 },
+      { name: 'Logical Deduction', score: cognitiveProfile?.logicalDeduction || 0 },
+      { name: 'Numerical Reasoning', score: cognitiveProfile?.numericalReasoning || 0 },
+      { name: 'Short-term Memory', score: cognitiveProfile?.shortTermMemory || 0 }
+    ];
+
+    ctx.fillStyle = '#1f2937';
+    ctx.font = 'bold 32px Arial';
+    ctx.fillText('Cognitive Domain Scores', 50, 480);
+
+    domains.forEach((domain, index) => {
+      const y = 520 + (index * 50);
+      ctx.fillStyle = '#374151';
+      ctx.font = '20px Arial';
+      ctx.fillText(domain.name, 50, y);
+      ctx.fillStyle = '#059669';
+      ctx.font = 'bold 24px Arial';
+      ctx.fillText(`${domain.score?.toFixed(1) || 'N/A'}%`, 400, y);
+    });
+
+    // Footer
+    ctx.fillStyle = '#9ca3af';
+    ctx.font = '16px Arial';
+    ctx.fillText('Generated by IQ Test System', 50, canvas.height - 30);
+
+    try {
+      const blob = await new Promise<Blob>((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) resolve(blob);
+        }, 'image/png');
+      });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `iq-test-results-${Date.now()}.png`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Success!",
+        description: "Results image downloaded",
+        duration: 3000,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to generate image",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const exportToPDF = () => {
+    // This would require a PDF library like jsPDF
+    toast({
+      title: "Coming Soon",
+      description: "PDF export will be available soon",
+      duration: 3000,
+    });
+  };
+
+  const shareResults = () => {
     const url = generateShareUrl();
-    const text = `I just scored ${result.estimatedIQ} on this adaptive IQ test! 🧠`;
+    setShareUrl(url);
     
-    const shareUrls = {
-      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`
-    };
-    
-    window.open(shareUrls[platform as keyof typeof shareUrls], '_blank');
-    trackEngagement('results_shared', { platform });
+    if (navigator.share) {
+      navigator.share({
+        title: 'My IQ Test Results',
+        text: `I scored ${result.estimatedIQ} on the IQ test with ${result.accuracy?.toFixed(1) || 'N/A'}% accuracy!`,
+        url: url,
+      });
+    } else {
+      copyToClipboard(url);
+    }
   };
 
   return (
@@ -329,129 +193,151 @@ export function ResultsExportTab({
       className="space-y-6"
     >
       {/* Export Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Download className="w-5 h-5" />
-            <span>Export Results</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Button
-              variant="outline"
-              onClick={() => exportResults('pdf')}
-              disabled={isExporting}
-              className="h-20 flex flex-col items-center space-y-2"
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <ImageIcon className="w-12 h-12 mx-auto mb-4 text-blue-500" />
+            <h3 className="font-semibold mb-2">Export as Image</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Download your results as a high-quality image
+            </p>
+            <Button 
+              onClick={generateImage} 
+              disabled={isGenerating}
+              className="w-full"
             >
-              <FileText className="w-6 h-6" />
-              <span>PDF Report</span>
+              {isGenerating ? (
+                <div className="flex items-center space-x-2">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <span>Generating...</span>
+                </div>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Download Image
+                </>
+              )}
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => exportResults('html')}
-              disabled={isExporting}
-              className="h-20 flex flex-col items-center space-y-2"
-            >
-              <FileText className="w-6 h-6" />
-              <span>HTML Report</span>
-            </Button>
-            <Button
-              variant="outline"
-              onClick={() => exportResults('json')}
-              disabled={isExporting}
-              className="h-20 flex flex-col items-center space-y-2"
-            >
-              <FileText className="w-6 h-6" />
-              <span>Raw Data</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
 
-      {/* Share Options */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center space-x-2">
-            <Share2 className="w-5 h-5" />
-            <span>Share Results</span>
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Share URL */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Shareable Link</label>
-            <div className="flex space-x-2">
+        <Card>
+          <CardContent className="p-6 text-center">
+            <FileText className="w-12 h-12 mx-auto mb-4 text-green-500" />
+            <h3 className="font-semibold mb-2">Export as PDF</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Get a detailed PDF report of your results
+            </p>
+            <Button onClick={exportToPDF} className="w-full">
+              <Download className="w-4 h-4 mr-2" />
+              Download PDF
+            </Button>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6 text-center">
+            <Share2 className="w-12 h-12 mx-auto mb-4 text-purple-500" />
+            <h3 className="font-semibold mb-2">Share Results</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              Share your results with friends and family
+            </p>
+            <Button onClick={shareResults} className="w-full">
+              <Share2 className="w-4 h-4 mr-2" />
+              Share
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Share URL */}
+      {shareUrl && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center space-x-2">
+              <ExternalLink className="w-5 h-5" />
+              <span>Share Link</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center space-x-2">
               <input
                 type="text"
-                value={shareUrl || generateShareUrl()}
+                value={shareUrl}
                 readOnly
-                className="flex-1 px-3 py-2 border rounded-md bg-muted"
+                className="flex-1 p-2 border rounded-md bg-muted"
               />
               <Button
+                onClick={() => copyToClipboard(shareUrl)}
                 variant="outline"
-                onClick={() => copyToClipboard(shareUrl || generateShareUrl())}
+                size="sm"
               >
-                {copied ? <CheckCircle className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                {copied ? (
+                  <Check className="w-4 h-4" />
+                ) : (
+                  <Copy className="w-4 h-4" />
+                )}
               </Button>
             </div>
-          </div>
+          </CardContent>
+        </Card>
+      )}
 
-          {/* Social Media */}
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Social Media</label>
-            <div className="flex space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => shareToSocial('twitter')}
-              >
-                <Twitter className="w-4 h-4 mr-2" />
-                Twitter
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => shareToSocial('facebook')}
-              >
-                <Facebook className="w-4 h-4 mr-2" />
-                Facebook
-              </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => shareToSocial('linkedin')}
-              >
-                <Linkedin className="w-4 h-4 mr-2" />
-                LinkedIn
-              </Button>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+      {/* Hidden Canvas for Image Generation */}
+      <canvas
+        ref={canvasRef}
+        style={{ display: 'none' }}
+      />
 
-      {/* Quick Stats for Sharing */}
+      {/* Results Summary for Export */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Stats</CardTitle>
+          <CardTitle>Results Summary</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-primary">{result.estimatedIQ}</div>
-              <div className="text-sm text-muted-foreground">IQ Score</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold mb-3">Test Statistics</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Total Questions:</span>
+                  <span className="font-semibold">{result.totalQuestions}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Correct Answers:</span>
+                  <span className="font-semibold">{result.correctAnswers}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Completion Time:</span>
+                  <span className="font-semibold">{Math.round(result.completionTime / 60)}m {Math.round(result.completionTime % 60)}s</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Questions per Minute:</span>
+                  <span className="font-semibold">{(result.totalQuestions / (result.completionTime / 60)).toFixed(1)}</span>
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{result.accuracy.toFixed(1)}%</div>
-              <div className="text-sm text-muted-foreground">Accuracy</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{Math.round(result.percentileRank)}th</div>
-              <div className="text-sm text-muted-foreground">Percentile</div>
-            </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{Math.round(result.completionTime / 60)}m</div>
-              <div className="text-sm text-muted-foreground">Duration</div>
+            
+            <div>
+              <h4 className="font-semibold mb-3">Quality Metrics</h4>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Cronbach's Alpha:</span>
+                  <span className="font-semibold">{result.cronbachAlpha?.toFixed(3) || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Test Reliability:</span>
+                  <span className="font-semibold">{result.testReliability?.toFixed(3) || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Measurement Precision:</span>
+                  <span className="font-semibold">{result.measurementPrecision?.toFixed(2) || 'N/A'}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-sm text-muted-foreground">Final θ (Theta):</span>
+                  <span className="font-semibold">{result.finalAbilityEstimate?.toFixed(3) || 'N/A'}</span>
+                </div>
+              </div>
             </div>
           </div>
         </CardContent>

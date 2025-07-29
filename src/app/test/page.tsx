@@ -4,7 +4,6 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { AnimatedQuestionCard } from '@/components/animated-question-card';
-import { LoadingQuestion } from '@/components/loading-question';
 import { ErrorBoundary } from '@/components/error-boundary';
 import { QuestionNavigator } from '@/components/question-navigator';
 import { useTestStore } from '@/store/test-store';
@@ -37,7 +36,6 @@ export default function TestPage() {
   const { toast } = useToast();
   const { 
     currentSession,
-    submitAnswer,
     updateTimer,
     endTest,
     goToNextQuestion,
@@ -123,17 +121,7 @@ export default function TestPage() {
   const currentQuestion = currentSession.questions[currentSession.currentQuestionIndex];
   const direction = currentSession.currentQuestionIndex;
 
-  const handleAnswer = (answer: number) => {
-    submitAnswer(answer);
-    
-    // Auto-navigate to next question if not the last one
-    const isLastQuestion = currentSession.currentQuestionIndex === currentSession.questions.length - 1;
-    if (!isLastQuestion) {
-      goToNextQuestion();
-    }
-  };
-
-  const handleDragEnd = (e: any, { offset, velocity }: any) => {
+  const handleDragEnd = (e: React.PointerEvent, { offset, velocity }: { offset: { x: number }, velocity: { x: number } }) => {
     const swipe = swipePower(offset.x, velocity.x);
 
     if (swipe < -swipeConfidenceThreshold) {
