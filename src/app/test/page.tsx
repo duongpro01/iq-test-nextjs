@@ -145,45 +145,49 @@ export default function TestPage() {
 
   return (
     <ErrorBoundary>
-      <div className="space-y-6 md:space-y-8">
-        {/* Question Card */}
-        <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-          <AnimatePresence initial={false} custom={direction}>
-            <motion.div
-              key={currentSession.currentQuestionIndex}
-              custom={direction}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { type: "spring", stiffness: 300, damping: 30 },
-                opacity: { duration: 0.2 }
-              }}
-              drag="x"
-              dragConstraints={{ left: 0, right: 0 }}
-              dragElastic={1}
-              onDragEnd={handleDragEnd}
-              className="w-full"
-            >
-              <AnimatedQuestionCard
-                question={currentQuestion}
-                questionNumber={currentSession.currentQuestionIndex + 1}
-                totalQuestions={currentSession.questions.length}
-                transition={{
-                  type: 'slide',
-                  duration: 0.5,
-                  easing: 'easeInOut',
-                  direction: direction > (currentSession.currentQuestionIndex - 1) ? 'right' : 'left'
-                }}
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+      <div className="min-h-screen bg-background overflow-x-hidden">
+        <div className="container mx-auto px-4 py-4 sm:py-6 max-w-4xl">
+          <div className="space-y-4 sm:space-y-6">
+            {/* Question Card */}
+            <div className="bg-card rounded-lg shadow-sm sm:shadow-lg overflow-hidden">
+              <AnimatePresence initial={false} custom={direction}>
+                <motion.div
+                  key={currentSession.currentQuestionIndex}
+                  custom={direction}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{
+                    x: { type: "spring", stiffness: 300, damping: 30 },
+                    opacity: { duration: 0.2 }
+                  }}
+                  drag="x"
+                  dragConstraints={{ left: 0, right: 0 }}
+                  dragElastic={1}
+                  onDragEnd={handleDragEnd}
+                  className="w-full"
+                >
+                  <AnimatedQuestionCard
+                    question={currentQuestion}
+                    questionNumber={currentSession.currentQuestionIndex + 1}
+                    totalQuestions={currentSession.questions.length}
+                    transition={{
+                      type: 'slide',
+                      duration: 0.5,
+                      easing: 'easeInOut',
+                      direction: direction > (currentSession.currentQuestionIndex - 1) ? 'right' : 'left'
+                    }}
+                  />
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
-        {/* Question Navigator */}
-        <div className="bg-card rounded-lg shadow-lg p-4 md:p-6">
-          <QuestionNavigator />
+            {/* Question Navigator */}
+            <div className="bg-card rounded-lg shadow-sm sm:shadow-lg p-3 sm:p-4 md:p-6">
+              <QuestionNavigator />
+            </div>
+          </div>
         </div>
       </div>
     </ErrorBoundary>

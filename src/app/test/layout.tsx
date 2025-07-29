@@ -2,7 +2,6 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { TestNavigation } from '@/components/test-navigation';
 import { useTestStore } from '@/store/test-store';
 
 export default function TestLayout({
@@ -44,18 +43,11 @@ export default function TestLayout({
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen">
       {/* Main content */}
-      <main className="flex-1 container py-6">
+      <main className="flex-1">
         {children}
       </main>
-
-      {/* Navigation bar */}
-      <nav className="sticky bottom-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-t">
-        <div className="container h-16">
-          <TestNavigation />
-        </div>
-      </nav>
     </div>
   );
 } 

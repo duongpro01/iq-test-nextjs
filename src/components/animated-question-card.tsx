@@ -209,21 +209,21 @@ export function AnimatedQuestionCard({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/10 flex items-center justify-center p-4 test-secure">
+    <div className="w-full">
       <motion.div
         key={question.id}
         variants={cardVariants}
         initial="enter"
         animate="center"
         exit="exit"
-        className="w-full max-w-4xl"
+        className="w-full"
       >
-        {/* Gamification Header */}
+        {/* Gamification Header - Hidden on mobile */}
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="mb-4 flex justify-between items-center"
+          className="mb-3 sm:mb-4 hidden sm:flex justify-between items-center"
         >
           <div className="flex items-center space-x-4">
             {userProfile && (
@@ -262,13 +262,13 @@ export function AnimatedQuestionCard({
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mb-6 space-y-4"
+          className="mb-3 sm:mb-4 space-y-2 sm:space-y-3"
         >
           {/* Progress Bar */}
-          <div className="space-y-2">
+          <div className="space-y-1 sm:space-y-2">
             <div className="flex justify-between items-center text-sm">
               <span className="font-medium">Question {questionNumber} of {totalQuestions}</span>
-              <span className="text-muted-foreground">
+              <span className="text-muted-foreground hidden sm:inline">
                 Ability Level: {currentSession?.abilityEstimate?.toFixed(1) || '0.0'}
               </span>
             </div>
@@ -276,8 +276,8 @@ export function AnimatedQuestionCard({
           </div>
 
           {/* Timers */}
-          <div className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-1 sm:space-y-0">
+            <div className="flex items-center space-x-3 sm:space-x-4">
               <motion.div 
                 className={`flex items-center space-x-2 ${isTimeWarning ? 'timer-warning' : ''} ${isTimeCritical ? 'timer-critical' : ''}`}
                 animate={isTimeCritical ? { scale: [1, 1.05, 1] } : {}}
@@ -285,13 +285,13 @@ export function AnimatedQuestionCard({
               >
                 <Clock className="w-4 h-4" />
                 <span className="font-mono text-sm">
-                  Question: {formatTime(timeRemaining)}
+                  {formatTime(timeRemaining)}
                 </span>
               </motion.div>
               <div className={`flex items-center space-x-2 ${isGlobalTimeWarning ? 'timer-warning' : ''}`}>
                 <Brain className="w-4 h-4" />
                 <span className="font-mono text-sm">
-                  Total: {formatTime(globalTimeRemaining)}
+                  {formatTime(globalTimeRemaining)}
                 </span>
               </div>
             </div>
@@ -309,16 +309,16 @@ export function AnimatedQuestionCard({
         </motion.div>
 
         {/* Question Card */}
-        <Card className="shadow-xl border-0 bg-card/95 backdrop-blur-sm">
-          <CardHeader className="pb-6">
+        <Card className="shadow-sm sm:shadow-lg border-0 bg-card/95 backdrop-blur-sm">
+          <CardHeader className="pb-3 sm:pb-4 md:pb-6">
             <motion.div 
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.4 }}
               className="flex items-start justify-between"
             >
-              <div className="flex-1">
-                <div className="flex items-center space-x-2 mb-2">
+              <div className="flex-1 min-w-0">
+                <div className="flex flex-wrap items-center gap-1 sm:gap-2 mb-2">
                   <Badge variant="secondary" className="text-xs">
                     {question.category}
                   </Badge>
@@ -336,7 +336,7 @@ export function AnimatedQuestionCard({
                     </Button>
                   )}
                 </div>
-                <CardTitle className="text-xl leading-relaxed">
+                <CardTitle className="text-base sm:text-lg md:text-xl leading-relaxed break-words">
                   {question.question}
                 </CardTitle>
                 {showHint && question.explanation && (
@@ -353,24 +353,24 @@ export function AnimatedQuestionCard({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="flex-shrink-0 ml-4"
+                  className="flex-shrink-0 ml-2 sm:ml-4"
                 >
-                  <AlertTriangle className={`w-6 h-6 ${isTimeCritical ? 'text-destructive' : 'text-yellow-500'}`} />
+                  <AlertTriangle className={`w-5 h-5 sm:w-6 sm:h-6 ${isTimeCritical ? 'text-destructive' : 'text-yellow-500'}`} />
                 </motion.div>
               )}
             </motion.div>
           </CardHeader>
 
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-3 sm:space-y-4">
             {/* Question Image (if any) */}
             {question.image && (
               <motion.div 
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.5 }}
-                className="flex justify-center mb-6"
+                className="flex justify-center mb-4 sm:mb-6"
               >
-                <div className="max-w-md">
+                <div className="max-w-full sm:max-w-md">
                   <Image 
                     src={question.image} 
                     alt="Question diagram" 
@@ -383,7 +383,7 @@ export function AnimatedQuestionCard({
             )}
 
             {/* Answer Options */}
-            <div className="grid grid-cols-1 gap-3">
+            <div className="grid grid-cols-1 gap-2 sm:gap-3">
               <AnimatePresence>
                 {question.options.map((option, index) => (
                   <motion.div
@@ -397,7 +397,7 @@ export function AnimatedQuestionCard({
                   >
                     <Button
                       variant={selectedAnswer === index ? "default" : "outline"}
-                      className={`w-full p-4 h-auto text-left justify-start transition-all duration-200 ${
+                      className={`w-full p-3 sm:p-4 h-auto text-left justify-start transition-all duration-200 ${
                         selectedAnswer === index 
                           ? 'ring-2 ring-primary ring-offset-2 bg-primary text-primary-foreground' 
                           : 'hover:bg-muted/50'
@@ -405,9 +405,9 @@ export function AnimatedQuestionCard({
                       onClick={() => setSelectedAnswer(index)}
                       disabled={isSubmitting}
                     >
-                      <div className="flex items-center space-x-3">
+                      <div className="flex items-center space-x-3 min-w-0">
                         <motion.div 
-                          className={`w-6 h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold ${
+                          className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center text-xs font-bold flex-shrink-0 ${
                             selectedAnswer === index 
                               ? 'bg-primary-foreground text-primary border-primary-foreground' 
                               : 'border-muted-foreground'
@@ -417,7 +417,7 @@ export function AnimatedQuestionCard({
                         >
                           {String.fromCharCode(65 + index)}
                         </motion.div>
-                        <span className="text-sm">{option}</span>
+                        <span className="text-sm break-words">{option}</span>
                       </div>
                     </Button>
                   </motion.div>
@@ -430,13 +430,13 @@ export function AnimatedQuestionCard({
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
-              className="flex justify-center pt-6"
+              className="flex justify-center pt-3 sm:pt-4 md:pt-6"
             >
               <Button
                 onClick={() => handleSubmit(selectedAnswer ?? -1)}
                 disabled={isSubmitting}
                 size="lg"
-                className="min-w-[200px]"
+                className="w-full sm:min-w-[200px]"
               >
                 {isSubmitting ? (
                   <motion.div 
@@ -467,7 +467,7 @@ export function AnimatedQuestionCard({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 1 }}
-              className="text-center text-xs text-muted-foreground pt-4"
+              className="text-center text-xs text-muted-foreground pt-2 sm:pt-4"
             >
               {selectedAnswer === null ? (
                 <p>Select an answer or click &quot;Skip Question&quot; to continue</p>

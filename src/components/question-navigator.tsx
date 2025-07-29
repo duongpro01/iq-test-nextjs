@@ -21,19 +21,20 @@ export function QuestionNavigator() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="text-center text-sm text-muted-foreground mb-4">
+    <div className="space-y-3 sm:space-y-4">
+      <div className="text-center text-sm text-muted-foreground mb-3 sm:mb-4">
         Click to navigate between questions
       </div>
 
-      <div className="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-1.5 sm:gap-2">
+      {/* Mobile: Compact grid */}
+      <div className="grid grid-cols-4 sm:grid-cols-5 md:grid-cols-8 lg:grid-cols-10 gap-1 sm:gap-1.5 md:gap-2">
         {Array.from({ length: totalQuestions }, (_, i) => (
           <Button
             key={i}
             variant={i === currentIndex ? "default" : "outline"}
             size="sm"
             className={cn(
-              "h-8 sm:h-10 w-full p-0 text-xs sm:text-sm",
+              "h-7 sm:h-8 md:h-10 w-full p-0 text-xs",
               answeredQuestions.has(i) && "bg-muted",
               !answeredQuestions.has(i) && i !== answeredQuestions.size && "opacity-50 cursor-not-allowed"
             )}
@@ -43,25 +44,6 @@ export function QuestionNavigator() {
             {i + 1}
           </Button>
         ))}
-      </div>
-
-      <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-4 mt-6">
-        <Button
-          variant="outline"
-          className="w-full sm:w-[200px]"
-          onClick={() => handleQuestionClick(currentIndex - 1)}
-          disabled={currentIndex === 0}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          className="w-full sm:w-[200px]"
-          onClick={() => handleQuestionClick(currentIndex + 1)}
-          disabled={currentIndex === totalQuestions - 1 || !answeredQuestions.has(currentIndex)}
-        >
-          Next
-        </Button>
       </div>
     </div>
   );
