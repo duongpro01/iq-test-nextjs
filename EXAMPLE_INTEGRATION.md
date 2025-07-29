@@ -38,12 +38,12 @@ my-elearning-platform/
 
 ### 1.1 Cài đặt từ NPM
 ```bash
-npm install @your-org/iq-test-module
+npm install @duongpro01/iq-test-nextjs
 ```
 
 ### 1.2 Hoặc sử dụng Git Submodule
 ```bash
-git submodule add https://github.com/your-org/iq-test-module.git src/modules/iq-test
+git submodule add https://github.com/duongpro01/iq-test-nextjs.git src/modules/iq-test
 ```
 
 ## 🎨 Bước 2: Tích Hợp Cơ Bản
@@ -51,7 +51,7 @@ git submodule add https://github.com/your-org/iq-test-module.git src/modules/iq-
 ### 2.1 Thêm vào trang chính
 ```typescript
 // src/app/page.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function HomePage() {
   return (
@@ -114,7 +114,7 @@ export default function HomePage() {
 ### 2.2 Tạo trang riêng cho IQ Test
 ```typescript
 // src/app/iq-test/page.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function IQTestPage() {
   return (
@@ -158,7 +158,7 @@ export default function IQTestPage() {
 'use client';
 
 import { useState, useEffect } from 'react';
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 interface UserProfile {
   id: string;
@@ -299,7 +299,7 @@ export default function DashboardPage() {
 ### 3.2 Tích hợp với Course System
 ```typescript
 // src/app/courses/[courseId]/assessment/page.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 interface CourseAssessmentProps {
   params: {
@@ -361,7 +361,7 @@ export default function CourseAssessmentPage({ params }: CourseAssessmentProps) 
 ```typescript
 // src/store/user-store.ts
 import { create } from 'zustand';
-import { IQTestResults } from '@your-org/iq-test-module';
+import { IQTestResults } from '@duongpro01/iq-test-nextjs';
 
 interface UserStore {
   user: UserProfile | null;
@@ -405,7 +405,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 ```typescript
 // src/contexts/IQTestContext.tsx
 import { createContext, useContext, useState, ReactNode } from 'react';
-import { IQTestResults } from '@your-org/iq-test-module';
+import { IQTestResults } from '@duongpro01/iq-test-nextjs';
 
 interface IQTestContextType {
   results: IQTestResults[];
@@ -447,7 +447,7 @@ export const useIQTestContext = () => {
 ### 5.1 Theme Customization
 ```typescript
 // src/components/CustomIQTest.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export const CustomIQTest: React.FC = () => {
   return (
@@ -484,7 +484,7 @@ export const CustomIQTest: React.FC = () => {
 ### 5.2 Localization
 ```typescript
 // src/app/iq-test/page.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function IQTestPage() {
   return (
@@ -545,7 +545,7 @@ export const trackIQTestEvent = (event: string, data?: any) => {
 import dynamic from 'next/dynamic';
 
 const IQTestInterface = dynamic(
-  () => import('@your-org/iq-test-module').then(mod => ({ default: mod.IQTestInterface })),
+  () => import('@duongpro01/iq-test-nextjs').then(mod => ({ default: mod.IQTestInterface })),
   {
     loading: () => <div>Loading IQ Test...</div>,
     ssr: false

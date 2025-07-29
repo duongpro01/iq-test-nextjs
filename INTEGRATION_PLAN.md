@@ -209,7 +209,7 @@ export const IQTestInterface: React.FC<IQTestInterfaceProps> = ({
 ### 4.1 Method 1: Component Integration
 ```typescript
 // Trong trang Next.js chính
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function MainPage() {
   return (
@@ -255,7 +255,7 @@ export const IQTestModal: React.FC<{
 ### 4.3 Method 3: Route Integration
 ```typescript
 // pages/iq-test.tsx hoặc app/iq-test/page.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function IQTestPage() {
   return (
@@ -278,7 +278,7 @@ export default function IQTestPage() {
 ### 5.1 Package.json Configuration
 ```json
 {
-  "name": "@your-org/iq-test-module",
+  "name": "@duongpro01/iq-test-nextjs",
   "version": "1.0.0",
   "description": "Modular IQ Test component for Next.js",
   "main": "dist/index.js",
@@ -351,7 +351,7 @@ export default {
 ### 6.1 Basic Integration
 ```typescript
 // pages/features/iq-test.tsx
-import { IQTestInterface } from '@your-org/iq-test-module';
+import { IQTestInterface } from '@duongpro01/iq-test-nextjs';
 
 export default function FeaturesPage() {
   return (
@@ -542,7 +542,7 @@ export const usePerformanceMonitoring = () => {
 npm publish --access public
 
 # Install in target project
-npm install @your-org/iq-test-module
+npm install @duongpro01/iq-test-nextjs
 ```
 
 ### 9.2 Git Submodule
@@ -559,7 +559,7 @@ git submodule update --remote
 # Link package locally
 npm link
 cd ../target-project
-npm link @your-org/iq-test-module
+npm link @duongpro01/iq-test-nextjs
 ```
 
 ## 📋 Implementation Checklist
