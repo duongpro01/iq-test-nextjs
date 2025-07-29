@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Toaster } from "@/components/ui/toaster";
+import Script from 'next/script';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,11 +17,85 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Adaptive IQ Test System",
+  metadataBase: new URL('https://your-domain.com'),
+  title: {
+    default: "Adaptive IQ Test System",
+    template: "%s | Adaptive IQ Test System"
+  },
   description: "Advanced IQ test with adaptive difficulty, real-time scoring, and detailed analytics. Simulate real-world standardized IQ tests with pattern recognition, spatial reasoning, logic, and more.",
   keywords: ["IQ test", "intelligence test", "adaptive testing", "cognitive assessment", "pattern recognition", "spatial reasoning"],
   authors: [{ name: "IQ Test System" }],
   viewport: "width=device-width, initial-scale=1",
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://your-domain.com',
+    siteName: 'Adaptive IQ Test System',
+    title: 'Adaptive IQ Test System',
+    description: 'Advanced IQ test with adaptive difficulty and real-time scoring',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Adaptive IQ Test System'
+      }
+    ]
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Adaptive IQ Test System',
+    description: 'Advanced IQ test with adaptive difficulty and real-time scoring',
+    images: ['/twitter-image.jpg'],
+    creator: '@yourusername'
+  },
+  alternates: {
+    canonical: 'https://your-domain.com',
+    languages: {
+      'en': '/en',
+      'vi': '/vi'
+    }
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-verification-code',
+    yandex: 'your-yandex-verification-code',
+  }
+};
+
+// Structured data for the application
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "Adaptive IQ Test System",
+  "description": "Advanced IQ test with adaptive difficulty, real-time scoring, and detailed analytics.",
+  "applicationCategory": "EducationalApplication",
+  "operatingSystem": "Any",
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD"
+  },
+  "featureList": [
+    "Adaptive difficulty",
+    "Real-time scoring",
+    "Detailed analytics",
+    "Pattern recognition",
+    "Spatial reasoning",
+    "Logical deduction"
+  ],
+  "browserRequirements": "Requires JavaScript. Best viewed in modern browsers.",
+  "permissions": "No special permissions required"
 };
 
 export default function RootLayout({
@@ -30,6 +105,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          id="schema-org"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background font-sans`}
       >
@@ -43,7 +125,11 @@ export default function RootLayout({
             <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
               <div className="container flex h-14 items-center justify-between">
                 <div className="mr-4 hidden md:flex">
-                  <a className="mr-6 flex items-center space-x-2" href="/">
+                  <a 
+                    className="mr-6 flex items-center space-x-2" 
+                    href="/"
+                    aria-label="Home"
+                  >
                     <span className="hidden font-bold sm:inline-block">
                       IQ Test System
                     </span>

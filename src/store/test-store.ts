@@ -59,6 +59,7 @@ interface TestStore {
   
   // Configuration methods
   updateConfig: (newConfig: AdaptiveTestConfig) => void;
+  resetConfig: () => void;
 }
 
 const defaultConfig: AdaptiveTestConfig = {
@@ -124,10 +125,19 @@ export const useTestStore = create<TestStore>()(
 
       startTest: () => {
         const sessionId = generateSessionId();
+        const { config } = get();
+        
+        // Debug: Log config values
+        console.log('startTest - config:', config);
+        console.log('startTest - totalQuestions:', config.totalQuestions);
+        
         // Get localized questions based on current language
         const currentLocale = i18n.language || 'en';
-        const localizedQuestions = getLocalizedQuestions(currentLocale);
+        const localizedQuestions = getLocalizedQuestions(currentLocale, config.totalQuestions);
         const shuffledQuestions = shuffleArray(localizedQuestions);
+        
+        // Debug: Log questions length
+        console.log('startTest - questions length:', shuffledQuestions.length);
         
         // Initialize domain coverage tracking
         const domainCoverage: Record<QuestionCategory, number> = {
@@ -138,12 +148,16 @@ export const useTestStore = create<TestStore>()(
           [QuestionCategory.NUMERICAL_REASONING]: 0
         };
         
+        // Adjust target domain balance based on total questions
+        const questionsPerDomain = Math.floor(config.totalQuestions / 5);
+        const remainingQuestions = config.totalQuestions % 5;
+        
         const targetDomainBalance: Record<QuestionCategory, number> = {
-          [QuestionCategory.PATTERN_RECOGNITION]: 6,
-          [QuestionCategory.SPATIAL_REASONING]: 6,
-          [QuestionCategory.LOGICAL_DEDUCTION]: 6,
-          [QuestionCategory.SHORT_TERM_MEMORY]: 6,
-          [QuestionCategory.NUMERICAL_REASONING]: 6
+          [QuestionCategory.PATTERN_RECOGNITION]: questionsPerDomain + (remainingQuestions > 0 ? 1 : 0),
+          [QuestionCategory.SPATIAL_REASONING]: questionsPerDomain + (remainingQuestions > 1 ? 1 : 0),
+          [QuestionCategory.LOGICAL_DEDUCTION]: questionsPerDomain + (remainingQuestions > 2 ? 1 : 0),
+          [QuestionCategory.SHORT_TERM_MEMORY]: questionsPerDomain + (remainingQuestions > 3 ? 1 : 0),
+          [QuestionCategory.NUMERICAL_REASONING]: questionsPerDomain
         };
 
         const newSession: TestSession = {
@@ -152,15 +166,15 @@ export const useTestStore = create<TestStore>()(
           currentQuestionIndex: 0,
           questions: shuffledQuestions,
           answers: [],
-          globalTimeRemaining: get().config.globalTimeLimit,
-          abilityEstimate: get().config.startingAbility,
-          abilityHistory: [get().config.startingAbility],
+          globalTimeRemaining: config.globalTimeLimit,
+          abilityEstimate: config.startingAbility,
+          abilityHistory: [config.startingAbility],
           standardError: 1.0, // Initial high uncertainty
           isCompleted: false,
           isPaused: false,
           domainCoverage,
           targetDomainBalance,
-          config: get().config // Add config to session
+          config: config // Add config to session
         };
 
         set({ 
@@ -697,7 +711,13 @@ export const useTestStore = create<TestStore>()(
       },
 
       updateConfig: (newConfig: AdaptiveTestConfig) => {
+        console.log('updateConfig called with:', newConfig);
         set({ config: newConfig });
+      },
+
+      resetConfig: () => {
+        console.log('resetConfig called');
+        set({ config: defaultConfig });
       },
     }),
     {

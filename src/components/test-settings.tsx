@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -20,29 +21,44 @@ import {
 } from 'lucide-react';
 import { useTestStore } from '@/store/test-store';
 import { AdaptiveTestConfig } from '@/types';
+import { useToast } from "@/components/ui/use-toast";
 
 interface TestSettingsProps {
   onClose?: () => void;
 }
 
 export function TestSettings({ onClose }: TestSettingsProps) {
+  const router = useRouter();
   const { config, updateConfig } = useTestStore();
   const [settings, setSettings] = useState<AdaptiveTestConfig>(config);
   const [hasChanges, setHasChanges] = useState(false);
+  const { toast } = useToast();
+  const [activePreset, setActivePreset] = useState<string>("");
 
   useEffect(() => {
+    console.log('TestSettings mounted with config:', config);
     setSettings(config);
   }, [config]);
 
   useEffect(() => {
     const hasChanges = JSON.stringify(settings) !== JSON.stringify(config);
+    console.log('hasChanges updated:', hasChanges, 'settings:', settings, 'config:', config);
+    console.log('settings JSON:', JSON.stringify(settings));
+    console.log('config JSON:', JSON.stringify(config));
+    console.log('JSON comparison result:', JSON.stringify(settings) === JSON.stringify(config));
     setHasChanges(hasChanges);
   }, [settings, config]);
 
   const handleSave = () => {
+    console.log('handleSave called with settings:', settings);
     updateConfig(settings);
     setHasChanges(false);
-    if (onClose) onClose();
+    console.log('hasChanges set to false');
+    if (onClose) {
+      onClose();
+    }
+    // Remove automatic navigation to /test
+    // User should click "Start Test" button instead
   };
 
   const handleReset = () => {
@@ -66,6 +82,20 @@ export function TestSettings({ onClose }: TestSettingsProps) {
   const parseTime = (timeString: string) => {
     const [minutes, seconds] = timeString.split(':').map(Number);
     return (minutes * 60) + (seconds || 0);
+  };
+
+  const applyPreset = (presetName: string, presetConfig: Partial<AdaptiveTestConfig>) => {
+    setSettings({
+      ...config,
+      ...presetConfig
+    });
+    setActivePreset(presetName);
+    setHasChanges(true);
+    toast({
+      title: "Preset Applied",
+      description: `${presetName} settings have been applied. Don't forget to save your changes!`,
+      duration: 3000,
+    });
   };
 
   return (
@@ -92,6 +122,21 @@ export function TestSettings({ onClose }: TestSettingsProps) {
           <Button onClick={handleSave} disabled={!hasChanges}>
             <Save className="w-4 h-4 mr-2" />
             Save Settings
+          </Button>
+          <Button 
+            variant="default" 
+            onClick={() => {
+              console.log('Start Test button clicked, hasChanges:', hasChanges);
+              const { startTest } = useTestStore.getState();
+              console.log('Calling startTest...');
+              startTest();
+              console.log('startTest called, navigating to /test');
+              router.push('/test');
+            }}
+            // disabled={hasChanges} // Temporarily removed for testing
+          >
+            <Target className="w-4 h-4 mr-2" />
+            Start Test {hasChanges ? '(Disabled)' : '(Enabled)'}
           </Button>
         </div>
       </div>
@@ -371,70 +416,92 @@ export function TestSettings({ onClose }: TestSettingsProps) {
           </CardHeader>
           <CardContent className="space-y-3">
             <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => {
-                setSettings({
-                  ...settings,
-                  totalQuestions: 20,
-                  globalTimeLimit: 1200,
-                  questionTimeLimit: 60,
-                  startingAbility: 0.0
-                });
-              }}
+              variant={activePreset === "Quick Test" ? "default" : "outline"}
+              className={`w-full justify-start ${
+                activePreset === "Quick Test" ? "bg-primary text-primary-foreground" : ""
+              }`}
+              onClick={() => applyPreset("Quick Test", {
+                totalQuestions: 20,
+                globalTimeLimit: 1200,
+                questionTimeLimit: 60,
+                startingAbility: 0.0,
+                targetStandardError: 0.3,
+                selectionMethod: 'MaxInfo' as const,
+                exposureControl: true,
+                contentBalancing: true,
+                penalizeSlowAnswers: true,
+                penalizeFastAnswers: true,
+                timeWeightFactor: 0.1
+              })}
             >
               <Target className="w-4 h-4 mr-2" />
               Quick Test (20 questions, 20 min)
             </Button>
 
             <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => {
-                setSettings({
-                  ...settings,
-                  totalQuestions: 35,
-                  globalTimeLimit: 2400,
-                  questionTimeLimit: 70,
-                  startingAbility: 0.0
-                });
-              }}
+              variant={activePreset === "Standard Test" ? "default" : "outline"}
+              className={`w-full justify-start ${
+                activePreset === "Standard Test" ? "bg-primary text-primary-foreground" : ""
+              }`}
+              onClick={() => applyPreset("Standard Test", {
+                totalQuestions: 35,
+                globalTimeLimit: 2400,
+                questionTimeLimit: 70,
+                startingAbility: 0.0,
+                targetStandardError: 0.3,
+                selectionMethod: 'MaxInfo' as const,
+                exposureControl: true,
+                contentBalancing: true,
+                penalizeSlowAnswers: true,
+                penalizeFastAnswers: true,
+                timeWeightFactor: 0.1
+              })}
             >
               <Brain className="w-4 h-4 mr-2" />
               Standard Test (35 questions, 40 min)
             </Button>
 
             <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => {
-                setSettings({
-                  ...settings,
-                  totalQuestions: 50,
-                  globalTimeLimit: 3600,
-                  questionTimeLimit: 72,
-                  startingAbility: 0.0,
-                  targetStandardError: 0.2
-                });
-              }}
+              variant={activePreset === "Comprehensive Test" ? "default" : "outline"}
+              className={`w-full justify-start ${
+                activePreset === "Comprehensive Test" ? "bg-primary text-primary-foreground" : ""
+              }`}
+              onClick={() => applyPreset("Comprehensive Test", {
+                totalQuestions: 50,
+                globalTimeLimit: 3600,
+                questionTimeLimit: 72,
+                startingAbility: 0.0,
+                targetStandardError: 0.2,
+                selectionMethod: 'Hybrid' as const,
+                exposureControl: true,
+                contentBalancing: true,
+                penalizeSlowAnswers: true,
+                penalizeFastAnswers: true,
+                timeWeightFactor: 0.15
+              })}
             >
               <Zap className="w-4 h-4 mr-2" />
               Comprehensive Test (50 questions, 60 min)
             </Button>
 
             <Button
-              variant="outline"
-              className="w-full justify-start"
-              onClick={() => {
-                setSettings({
-                  ...settings,
-                  totalQuestions: 30,
-                  globalTimeLimit: 1800,
-                  questionTimeLimit: 60,
-                  startingAbility: 1.0,
-                  targetStandardError: 0.25
-                });
-              }}
+              variant={activePreset === "Advanced Level" ? "default" : "outline"}
+              className={`w-full justify-start ${
+                activePreset === "Advanced Level" ? "bg-primary text-primary-foreground" : ""
+              }`}
+              onClick={() => applyPreset("Advanced Level", {
+                totalQuestions: 30,
+                globalTimeLimit: 1800,
+                questionTimeLimit: 60,
+                startingAbility: 1.0,
+                targetStandardError: 0.25,
+                selectionMethod: 'Bayesian' as const,
+                exposureControl: true,
+                contentBalancing: true,
+                penalizeSlowAnswers: true,
+                penalizeFastAnswers: true,
+                timeWeightFactor: 0.2
+              })}
             >
               <Target className="w-4 h-4 mr-2" />
               Advanced Level (30 questions, 30 min)
